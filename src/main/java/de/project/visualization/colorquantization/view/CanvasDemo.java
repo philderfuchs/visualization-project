@@ -16,9 +16,14 @@ import javax.media.j3d.BranchGroup;
 
 import javax.media.j3d.Canvas3D;
 import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.GeometryArray;
+import javax.media.j3d.PointArray;
 import javax.media.j3d.PolygonAttributes;
+import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
@@ -59,23 +64,30 @@ public class CanvasDemo extends Applet {
 
 		BranchGroup group = new BranchGroup();
 
+		PointArray pointArray = new PointArray(histo.getLength(), GeometryArray.COORDINATES | GeometryArray.COLOR_3 );
+		Point3f[] pointCoordinates = new Point3f[histo.getLength()];
+		Color3f[] pointColors = new Color3f[histo.getLength()];
+
+		int i = 0;
 		for (Pixel p : histo.getPixelList()) {
-			TransformGroup transformGroupSphere = new TransformGroup();
-			Transform3D transform3dSphere = new Transform3D();
-			transform3dSphere.setTranslation(new Vector3f(((float) p.getR() / 255.0f) - 0.5f,
-					((float) p.getG() / 255.0f) - 0.5f, ((float) p.getB() / 255.0f) - 0.5f));
-			transformGroupSphere.setTransform(transform3dSphere);
-			Appearance appearanceSphere = new Appearance();
-			appearanceSphere.setColoringAttributes(new ColoringAttributes((float) p.getR() / 255.0f,
-					(float) p.getG() / 255.0f, (float) p.getB() / 255.0f, ColoringAttributes.FASTEST));
-			transformGroupSphere.addChild(new Sphere(.005f, appearanceSphere));
-			group.addChild(transformGroupSphere);
+
+			pointCoordinates[i] = new Point3f(((float) p.getR() / 255.0f) - 0.5f, ((float) p.getG() / 255.0f) - 0.5f,
+					((float) p.getB() / 255.0f) - 0.5f);
+			pointColors[i++] = new Color3f(((float) p.getR() / 255.0f), ((float) p.getG() / 255.0f),
+					((float) p.getB() / 255.0f));
+			
+
 		}
+		pointArray.setCoordinates(0, pointCoordinates);
+		pointArray.setColors(0, pointColors);
+
+		Shape3D shape = new Shape3D(pointArray);
 
 		Appearance boxAppearance = new Appearance();
 		boxAppearance.setPolygonAttributes(
 				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, .0f));
 		group.addChild(new Box(0.5f, 0.5f, 0.5f, boxAppearance));
+		group.addChild(shape);
 
 		SimpleUniverse universe = new SimpleUniverse(canvas);
 		universe.addBranchGraph(group);

@@ -1,67 +1,33 @@
-package de.project.visualization.colorquantization.view;
-
-import com.sun.j3d.utils.picking.*;
-
-import com.sun.j3d.utils.universe.SimpleUniverse;
-
-import de.project.visualization.colorquantization.entities.Histogram;
-import de.project.visualization.colorquantization.entities.Pixel;
-import de.project.visualization.colorquantization.read.ImageReader;
-
-import com.sun.j3d.utils.geometry.*;
+package de.project.visualization.colorquantization.visu;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
-
 import javax.media.j3d.Canvas3D;
-import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.GeometryArray;
 import javax.media.j3d.PointArray;
 import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.Shape3D;
-import javax.media.j3d.Transform3D;
-import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
-import javax.vecmath.Vector3d;
-import javax.vecmath.Vector3f;
 
-import java.awt.GraphicsConfiguration;
-
-import java.awt.BorderLayout;
-
-import java.awt.Label;
-import java.io.IOException;
-import java.applet.Applet;
-
-import com.sun.j3d.utils.applet.MainFrame;
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
+import com.sun.j3d.utils.geometry.Box;
+import com.sun.j3d.utils.universe.SimpleUniverse;
 
-public class CanvasDemo extends Applet {
+import de.project.visualization.colorquantization.entities.Histogram;
+import de.project.visualization.colorquantization.entities.Pixel;
 
-	public CanvasDemo(Histogram histo) {
+public class ClusteringVisualization {
 
-		setLayout(new BorderLayout());
+	private Histogram histo;
 
-		GraphicsConfiguration config =
-
-				SimpleUniverse.getPreferredConfiguration();
-
-		Canvas3D canvas = new Canvas3D(config);
-
-		add("North", new Label("This is the top"));
-
-		add("Center", canvas);
-
-		add("South", new Label("This is the bottom"));
-
-		this.draw3dCanvas(canvas, histo);
-
+	public ClusteringVisualization(Histogram histo) {
+		super();
+		this.histo = histo;
 	}
-
-	public void draw3dCanvas(Canvas3D canvas, Histogram histo) {
-
+	
+	public void Visualize(Canvas3D canvas) {
 		BranchGroup group = new BranchGroup();
 
 		PointArray pointArray = new PointArray(histo.getLength(), GeometryArray.COORDINATES | GeometryArray.COLOR_3 );
@@ -99,19 +65,14 @@ public class CanvasDemo extends Applet {
 
 	}
 
-	public static void main(String[] args) {
-
-		try {
-			Histogram histo = new ImageReader("resources/kanye_small.jpg").getHistogram();
-			System.out.println("read image. pixelsize: " + histo.getLength());
-
-			CanvasDemo demo = new CanvasDemo(histo);
-			new MainFrame(demo, 400, 400);
-		} catch (IOException e) {
-			System.out.println("Error reading Image");
-			e.printStackTrace();
-		}
-
+	public Histogram getHisto() {
+		return histo;
 	}
 
+	public void setHisto(Histogram histo) {
+		this.histo = histo;
+	}
+	
+	
+	
 }

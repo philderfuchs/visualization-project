@@ -1,4 +1,4 @@
-package de.project.visualization.colorquantization.view;
+package de.project.visualization.colorquantization.ui;
 
 import com.sun.j3d.utils.geometry.*;
 

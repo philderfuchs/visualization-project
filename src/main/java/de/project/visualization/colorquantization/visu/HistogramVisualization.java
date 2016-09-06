@@ -28,17 +28,16 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 import de.project.visualization.colorquantization.entities.*;
 import de.project.visualization.kmeans.Kmeans;
 
-public class ClusteringVisualization {
+public class HistogramVisualization {
 
 	private Histogram histo;
-	private SimpleUniverse universe;
 
-	public ClusteringVisualization(Histogram histo) {
+	public HistogramVisualization(Histogram histo) {
 		super();
 		this.histo = histo;
 	}
 
-	public void visualizeHistogram(Canvas3D canvas) {
+	public SimpleUniverse visualizeHistogram(Canvas3D canvas) {
 		BranchGroup group = new BranchGroup();
 
 		PointArray pointArray = new PointArray(histo.getLength(), GeometryArray.COORDINATES | GeometryArray.COLOR_3);
@@ -65,51 +64,17 @@ public class ClusteringVisualization {
 		group.addChild(new Box(0.5f, 0.5f, 0.5f, boxAppearance));
 		group.addChild(shape);		
 		
-		universe = new SimpleUniverse(canvas);
+		SimpleUniverse universe = new SimpleUniverse(canvas);
 		universe.addBranchGraph(group);
 
 		OrbitBehavior orbit = new OrbitBehavior(canvas, OrbitBehavior.REVERSE_ROTATE);
 		orbit.setSchedulingBounds(new BoundingSphere());
 		universe.getViewingPlatform().setViewPlatformBehavior(orbit);
 		universe.getViewingPlatform().setNominalViewingTransform();
-
-	}
-	
-	private BranchGroup clusterGroup;
-	private Kmeans kmeans;
-	
-	public void initKmeans() {
-		kmeans = new Kmeans(5);
-		clusterGroup = new BranchGroup();
-
-		for (Cluster c : kmeans.getClusters()) {
-			Transform3D transform3d = new Transform3D();
-			transform3d.setTranslation(new Vector3f(((float) c.getCenter().getR() / 255.0f) - 0.5f,
-					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f));
-			TransformGroup transformGroup = new TransformGroup(transform3d);
-			transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-			transformGroup.addChild(new ColorCube(0.07f));
-			clusterGroup.addChild(transformGroup);
-		}
-		universe.addBranchGraph(clusterGroup);
-
-	}
-	
-	public void step(){
 		
-		kmeans.step(histo);
-		ArrayList<Cluster> clusters = kmeans.getClusters();
-		Enumeration<Node> children = clusterGroup.getAllChildren();
-		int i = 0;
-		while(children.hasMoreElements()) {
-			TransformGroup transformGroup = (TransformGroup) children.nextElement();
-			Transform3D transform3d = new Transform3D();
-			Pixel p = clusters.get(i++).getCenter();
-			transform3d.setTranslation(new Vector3f(((float) p.getR() / 255.0f) - 0.5f,
-					((float) p.getG() / 255.0f) - 0.5f, ((float) p.getB() / 255.0f) - 0.5f));
-			transformGroup.setTransform(transform3d);
-		}
+		return universe;
 	}
+
 
 	public Histogram getHisto() {
 		return histo;

@@ -27,20 +27,6 @@ public class Kmeans {
 
 	}
 
-	// public void step() {
-	//
-	// ArrayList<HistogramWithMean> resultHistograms = this.kMeans(histogram,
-	// this.k);
-	//
-	// HashSet<Pixel> reducedColorPalette = new HashSet();
-	//
-	// for (HistogramWithMean h : resultHistograms) {
-	// reducedColorPalette.add(h.getMean());
-	// }
-	//
-	// return reducedColorPalette;
-	// }
-
 	public void step(Histogram histogram) {
 
 		for (Cluster c : clusters) {

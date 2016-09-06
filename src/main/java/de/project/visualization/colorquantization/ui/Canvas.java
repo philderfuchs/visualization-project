@@ -26,19 +26,22 @@ public class Canvas extends JPanel implements ActionListener {
 
 	private KmeansVisualization kmeansVisu;
 	private Histogram histo;
+	private SimpleUniverse universe;
 
-	
 	public Canvas() {
 		setLayout(new BorderLayout());
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
 
 		Canvas3D canvas = new Canvas3D(config);
-		add("North", new Label("This is the top"));
 		add("Center", canvas);
-		
-		JButton button = new JButton("move");
+
+		JButton button = new JButton("step");
 		button.addActionListener(this);
+		JButton button2 = new JButton("init");
+		button2.addActionListener(this);
 		add("South", button);
+		add("North", button2);
+
 		try {
 			histo = new ImageReader("resources/kanye_small.jpg").getHistogram();
 		} catch (IOException e) {
@@ -46,10 +49,7 @@ public class Canvas extends JPanel implements ActionListener {
 			e.printStackTrace();
 		}
 		HistogramVisualization visu = new HistogramVisualization(histo);
-		SimpleUniverse universe = visu.visualizeHistogram(canvas);
-		
-		kmeansVisu = new KmeansVisualization(universe);
-		kmeansVisu.initKmeans();
+		universe = visu.visualizeHistogram(canvas);
 	}
 
 	public static void main(String[] args) {
@@ -63,11 +63,16 @@ public class Canvas extends JPanel implements ActionListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if(e.getActionCommand().equals("move")) {
-//			System.out.println("clickediclick");
+		if (e.getActionCommand().equals("init")) {
+			if (kmeansVisu == null) {
+				kmeansVisu = new KmeansVisualization(universe);
+			}
+			kmeansVisu.initKmeans();
+		}
+		if (e.getActionCommand().equals("step")) {
 			kmeansVisu.step(histo);
 		}
-		
+
 	}
 
 }

@@ -11,10 +11,10 @@ public class Cluster {
 		this.center = center;
 	}
 	
-	public Histogram getHisto() {
+	public Histogram getHistogram() {
 		return histo;
 	}
-	public void setHisto(Histogram histo) {
+	public void setHistogram(Histogram histo) {
 		this.histo = histo;
 	}
 	public Pixel getCenter() {

@@ -1,5 +1,7 @@
 package de.project.visualization.colorquantization.visu;
 
+import java.util.Enumeration;
+
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
@@ -14,6 +16,7 @@ import javax.media.j3d.TransformGroup;
 import javax.vecmath.Color3f;
 import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
+import javax.media.j3d.Node;
 
 import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 import com.sun.j3d.utils.geometry.Box;
@@ -70,26 +73,41 @@ public class ClusteringVisualization {
 		universe.getViewingPlatform().setNominalViewingTransform();
 
 	}
-
-	public void showClusters() {
+	
+	private BranchGroup clusterGroup;
+	
+	public void initKmeans() {
 		Kmeans kmeans = new Kmeans(5);
-		BranchGroup group = new BranchGroup();
+		clusterGroup = new BranchGroup();
 
 		for (Cluster c : kmeans.getClusters()) {
 			Transform3D transform3d = new Transform3D();
 			transform3d.setTranslation(new Vector3f(((float) c.getCenter().getR() / 255.0f) - 0.5f,
 					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f));
 			TransformGroup transformGroup = new TransformGroup(transform3d);
+			transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 			transformGroup.addChild(new ColorCube(0.01f));
-			group.addChild(transformGroup);
+			clusterGroup.addChild(transformGroup);
 		}
-		universe.addBranchGraph(group);
+		universe.addBranchGraph(clusterGroup);
 
-		// Appearance appearanceSphere = new Appearance();
-		// appearanceSphere.setColoringAttributes(new ColoringAttributes(1.0f,
-		// 0, 0, ColoringAttributes.FASTEST));
-
-//		group.addChild(clusterGroup);
+	}
+	
+	public void step(){
+		Enumeration<Node> children = clusterGroup.getAllChildren();
+		while(children.hasMoreElements()) {
+			TransformGroup transformGroup = (TransformGroup) children.nextElement();
+			Transform3D transform3d = new Transform3D();
+			transform3d.setTranslation(new Vector3f(0.5f, 0.5f, 0.5f));
+			transformGroup.setTransform(transform3d);
+		}
+//		clusterGroup.
+//		for (Node n : ) {
+//			
+//		}
+//		Transform3D transform3d = new Transform3D();
+//		transform3d.setTranslation(new Vector3f(0.5f, 0.5f, 0.5f));
+//		test.setTransform(transform3d);
 	}
 
 	public Histogram getHisto() {

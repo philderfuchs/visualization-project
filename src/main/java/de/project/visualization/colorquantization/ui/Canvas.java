@@ -7,6 +7,7 @@ import de.project.visualization.colorquantization.read.ImageReader;
 import de.project.visualization.colorquantization.visu.ClusteringVisualization;
 
 import javax.media.j3d.Canvas3D;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -16,10 +17,14 @@ import java.awt.GraphicsConfiguration;
 import java.awt.BorderLayout;
 
 import java.awt.Label;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
-public class Canvas extends JPanel {
+public class Canvas extends JPanel implements ActionListener {
 
+	private ClusteringVisualization visu;
+	
 	public Canvas() {
 		setLayout(new BorderLayout());
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
@@ -27,18 +32,20 @@ public class Canvas extends JPanel {
 		Canvas3D canvas = new Canvas3D(config);
 		add("North", new Label("This is the top"));
 		add("Center", canvas);
-		add("South", new Label("This is the bottom"));
-
+		
+		JButton button = new JButton("move");
+		button.addActionListener(this);
+		add("South", button);
+		Histogram histo = null;
 		try {
-			Histogram histo = new ImageReader("resources/kanye_small.jpg").getHistogram();
-			ClusteringVisualization visu = new ClusteringVisualization(histo);
-			visu.visualizeHistogram(canvas);
-			visu.showClusters();
-
+			histo = new ImageReader("resources/kanye_small.jpg").getHistogram();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		visu = new ClusteringVisualization(histo);
+		visu.visualizeHistogram(canvas);
+		visu.initKmeans();
 	}
 
 	public static void main(String[] args) {
@@ -49,6 +56,14 @@ public class Canvas extends JPanel {
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+	}
+
+	public void actionPerformed(ActionEvent e) {
+		if(e.getActionCommand().equals("move")) {
+//			System.out.println("clickediclick");
+			visu.step();
+		}
+		
 	}
 
 }

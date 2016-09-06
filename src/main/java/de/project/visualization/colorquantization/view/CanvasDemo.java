@@ -1,8 +1,12 @@
-package de.project.visualization.clustering_algorithms;
+package de.project.visualization.colorquantization.view;
 
 import com.sun.j3d.utils.picking.*;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
+
+import de.project.visualization.colorquantization.entities.Histogram;
+import de.project.visualization.colorquantization.entities.Pixel;
+import de.project.visualization.colorquantization.read.ImageReader;
 
 import com.sun.j3d.utils.geometry.*;
 
@@ -23,7 +27,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.BorderLayout;
 
 import java.awt.Label;
-
+import java.io.IOException;
 import java.applet.Applet;
 
 import com.sun.j3d.utils.applet.MainFrame;
@@ -31,7 +35,7 @@ import com.sun.j3d.utils.behaviors.vp.OrbitBehavior;
 
 public class CanvasDemo extends Applet {
 
-	public CanvasDemo() {
+	public CanvasDemo(Histogram histo) {
 
 		setLayout(new BorderLayout());
 
@@ -47,25 +51,27 @@ public class CanvasDemo extends Applet {
 
 		add("South", new Label("This is the bottom"));
 
-		this.draw3dCanvas(canvas);
+		this.draw3dCanvas(canvas, histo);
 
 	}
 
-	public void draw3dCanvas(Canvas3D canvas) {
+	public void draw3dCanvas(Canvas3D canvas, Histogram histo) {
 
 		BranchGroup group = new BranchGroup();
 
-		TransformGroup transformGroupSphere = new TransformGroup();
-		Transform3D transform3dSphere = new Transform3D();
-		transform3dSphere.setTranslation(
-				new Vector3f((255.0f / 255.0f) - 0.5f, (0.0f / 255.0f) - 0.5f, (0.0f / 255.0f) - 0.5f));
-		transformGroupSphere.setTransform(transform3dSphere);
-		Appearance appearanceSphere = new Appearance();
-		appearanceSphere.setColoringAttributes(new ColoringAttributes(1.0f, 0, 0, ColoringAttributes.FASTEST));
-		transformGroupSphere.addChild(new Sphere(.2f, appearanceSphere));
+		for (Pixel p : histo.getPixelList()) {
+			TransformGroup transformGroupSphere = new TransformGroup();
+			Transform3D transform3dSphere = new Transform3D();
+			transform3dSphere.setTranslation(new Vector3f(((float) p.getR() / 255.0f) - 0.5f,
+					((float) p.getG() / 255.0f) - 0.5f, ((float) p.getB() / 255.0f) - 0.5f));
+			transformGroupSphere.setTransform(transform3dSphere);
+			Appearance appearanceSphere = new Appearance();
+			appearanceSphere.setColoringAttributes(new ColoringAttributes((float) p.getR() / 255.0f,
+					(float) p.getG() / 255.0f, (float) p.getB() / 255.0f, ColoringAttributes.FASTEST));
+			transformGroupSphere.addChild(new Sphere(.005f, appearanceSphere));
+			group.addChild(transformGroupSphere);
+		}
 
-		group.addChild(transformGroupSphere);
-		
 		Appearance boxAppearance = new Appearance();
 		boxAppearance.setPolygonAttributes(
 				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, .0f));
@@ -83,9 +89,16 @@ public class CanvasDemo extends Applet {
 
 	public static void main(String[] args) {
 
-		CanvasDemo demo = new CanvasDemo();
+		try {
+			Histogram histo = new ImageReader("resources/kanye_small.jpg").getHistogram();
+			System.out.println("read image. pixelsize: " + histo.getLength());
 
-		new MainFrame(demo, 400, 400);
+			CanvasDemo demo = new CanvasDemo(histo);
+			new MainFrame(demo, 400, 400);
+		} catch (IOException e) {
+			System.out.println("Error reading Image");
+			e.printStackTrace();
+		}
 
 	}
 

@@ -1,4 +1,4 @@
-package de.project.visualization.clustering_algorithms;
+package de.project.visualization.colorquantization.view;
 
 import com.sun.j3d.utils.geometry.*;
 

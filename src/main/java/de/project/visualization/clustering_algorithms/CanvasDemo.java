@@ -11,9 +11,11 @@ import javax.media.j3d.BoundingSphere;
 import javax.media.j3d.BranchGroup;
 
 import javax.media.j3d.Canvas3D;
+import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.vecmath.Vector3d;
 import javax.vecmath.Vector3f;
 
 import java.awt.GraphicsConfiguration;
@@ -48,32 +50,26 @@ public class CanvasDemo extends Applet {
 		this.draw3dCanvas(canvas);
 
 	}
-	
+
 	public void draw3dCanvas(Canvas3D canvas) {
-		
+
 		BranchGroup group = new BranchGroup();
+
+		TransformGroup transformGroupSphere = new TransformGroup();
+		Transform3D transform3dSphere = new Transform3D();
+		transform3dSphere.setTranslation(
+				new Vector3f((255.0f / 255.0f) - 0.5f, (0.0f / 255.0f) - 0.5f, (0.0f / 255.0f) - 0.5f));
+		transformGroupSphere.setTransform(transform3dSphere);
+		Appearance appearanceSphere = new Appearance();
+		appearanceSphere.setColoringAttributes(new ColoringAttributes(1.0f, 0, 0, ColoringAttributes.FASTEST));
+		transformGroupSphere.addChild(new Sphere(.2f, appearanceSphere));
+
+		group.addChild(transformGroupSphere);
 		
-//		TransformGroup tg = new TransformGroup();
-//		Transform3D transform = new Transform3D();
-//		Vector3f vector = new Vector3f(0.2f, .0f, .0f);
-//		transform.setTranslation(vector);
-//		tg.setTransform(transform);
-//		tg.addChild(new ColorCube(0.3));
-		
-		Appearance appearance = new Appearance();
-		appearance.setPolygonAttributes(
-				new PolygonAttributes(PolygonAttributes.POLYGON_LINE,
-						PolygonAttributes.CULL_BACK, 0.0f));
-		
-		Box box = new Box(250, 250, 250, appearance);
-		
-		TransformGroup transformGroup = new TransformGroup();
-		Transform3D transform3d = new Transform3D();
-		transform3d.setScale(1.0f/250.0f);
-		transformGroup.setTransform(transform3d);
-		transformGroup.addChild(box);
-		
-		group.addChild(transformGroup);
+		Appearance boxAppearance = new Appearance();
+		boxAppearance.setPolygonAttributes(
+				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, .0f));
+		group.addChild(new Box(0.5f, 0.5f, 0.5f, boxAppearance));
 
 		SimpleUniverse universe = new SimpleUniverse(canvas);
 		universe.addBranchGraph(group);
@@ -83,7 +79,6 @@ public class CanvasDemo extends Applet {
 		universe.getViewingPlatform().setViewPlatformBehavior(orbit);
 		universe.getViewingPlatform().setNominalViewingTransform();
 
-		
 	}
 
 	public static void main(String[] args) {

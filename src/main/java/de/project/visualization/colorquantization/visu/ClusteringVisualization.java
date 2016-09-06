@@ -1,5 +1,6 @@
 package de.project.visualization.colorquantization.visu;
 
+import java.util.ArrayList;
 import java.util.Enumeration;
 
 import javax.media.j3d.Appearance;
@@ -75,9 +76,10 @@ public class ClusteringVisualization {
 	}
 	
 	private BranchGroup clusterGroup;
+	private Kmeans kmeans;
 	
 	public void initKmeans() {
-		Kmeans kmeans = new Kmeans(5);
+		kmeans = new Kmeans(5);
 		clusterGroup = new BranchGroup();
 
 		for (Cluster c : kmeans.getClusters()) {
@@ -86,7 +88,7 @@ public class ClusteringVisualization {
 					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f));
 			TransformGroup transformGroup = new TransformGroup(transform3d);
 			transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-			transformGroup.addChild(new ColorCube(0.01f));
+			transformGroup.addChild(new ColorCube(0.07f));
 			clusterGroup.addChild(transformGroup);
 		}
 		universe.addBranchGraph(clusterGroup);
@@ -94,20 +96,19 @@ public class ClusteringVisualization {
 	}
 	
 	public void step(){
+		
+		kmeans.step(histo);
+		ArrayList<Cluster> clusters = kmeans.getClusters();
 		Enumeration<Node> children = clusterGroup.getAllChildren();
+		int i = 0;
 		while(children.hasMoreElements()) {
 			TransformGroup transformGroup = (TransformGroup) children.nextElement();
 			Transform3D transform3d = new Transform3D();
-			transform3d.setTranslation(new Vector3f(0.5f, 0.5f, 0.5f));
+			Pixel p = clusters.get(i++).getCenter();
+			transform3d.setTranslation(new Vector3f(((float) p.getR() / 255.0f) - 0.5f,
+					((float) p.getG() / 255.0f) - 0.5f, ((float) p.getB() / 255.0f) - 0.5f));
 			transformGroup.setTransform(transform3d);
 		}
-//		clusterGroup.
-//		for (Node n : ) {
-//			
-//		}
-//		Transform3D transform3d = new Transform3D();
-//		transform3d.setTranslation(new Vector3f(0.5f, 0.5f, 0.5f));
-//		test.setTransform(transform3d);
 	}
 
 	public Histogram getHisto() {

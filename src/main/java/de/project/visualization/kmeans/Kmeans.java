@@ -13,11 +13,11 @@ import de.project.visualization.colorquantization.entities.*;
 public class Kmeans {
 
 	private int k;
-	private Set<Cluster> clusters;
+	private ArrayList<Cluster> clusters;
 
 	public Kmeans(int k) {
 		this.k = k;
-		clusters = new HashSet<Cluster>();
+		clusters = new ArrayList<Cluster>();
 		// initialize Clusters
 		for (int i = 0; i < k; i++) {
 			clusters.add(new Cluster(new Histogram(), new Pixel((int) (Math.random() * 255),
@@ -41,7 +41,7 @@ public class Kmeans {
 	// return reducedColorPalette;
 	// }
 
-	public void kMeans(Histogram histogram) {
+	public void step(Histogram histogram) {
 
 		for (Cluster c : clusters) {
 			// System.out.println(h.getHistogram().getCountOfPixels());
@@ -93,11 +93,11 @@ public class Kmeans {
 		this.k = k;
 	}
 
-	public Set<Cluster> getClusters() {
+	public ArrayList<Cluster> getClusters() {
 		return clusters;
 	}
 
-	public void setClusters(Set<Cluster> clusters) {
+	public void setClusters(ArrayList<Cluster> clusters) {
 		this.clusters = clusters;
 	}
 

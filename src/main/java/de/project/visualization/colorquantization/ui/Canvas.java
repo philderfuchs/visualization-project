@@ -10,6 +10,7 @@ import de.project.visualization.colorquantization.visu.KmeansVisualization;
 import javax.media.j3d.Canvas3D;
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -27,6 +28,8 @@ public class Canvas extends JPanel implements ActionListener {
 	private KmeansVisualization kmeansVisu;
 	private Histogram histo;
 	private SimpleUniverse universe;
+	
+	private static String filename = "djmel.jpg";
 
 	public Canvas() {
 		setLayout(new BorderLayout());
@@ -35,15 +38,20 @@ public class Canvas extends JPanel implements ActionListener {
 		Canvas3D canvas = new Canvas3D(config);
 		add("Center", canvas);
 
-		JButton button = new JButton("step");
-		button.addActionListener(this);
-		JButton button2 = new JButton("init");
-		button2.addActionListener(this);
-		add("South", button);
-		add("North", button2);
+		
+		JPanel southPanel = new JPanel();
+		JButton init = new JButton("init");
+		init.addActionListener(this);
+		JButton step = new JButton("step");
+		step.addActionListener(this);
+
+		southPanel.add(init);
+		southPanel.add(step);
+		add("South", southPanel);
+		add("North", new JLabel("filename"));
 
 		try {
-			histo = new ImageReader("resources/kanye_small.jpg").getHistogram();
+			histo = new ImageReader("resources/" + filename).getHistogram();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -64,10 +72,11 @@ public class Canvas extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("init")) {
-			if (kmeansVisu == null) {
-				kmeansVisu = new KmeansVisualization(universe);
+			if (kmeansVisu != null) {
+				kmeansVisu.destroyVisualization();
 			}
-			kmeansVisu.initKmeans();
+			kmeansVisu = new KmeansVisualization(5, universe);
+			kmeansVisu.initKmeans(histo);
 		}
 		if (e.getActionCommand().equals("step")) {
 			kmeansVisu.step(histo);

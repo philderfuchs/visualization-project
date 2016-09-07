@@ -18,30 +18,35 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 import de.project.visualization.colorquantization.entities.Cluster;
 import de.project.visualization.colorquantization.entities.Histogram;
 import de.project.visualization.colorquantization.entities.Pixel;
-import de.project.visualization.kmeans.Kmeans;
+import de.project.visualization.colorquantization.kmeans.Kmeans;
 
 public class KmeansVisualization {
+	
+	private SimpleUniverse universe;
 	private BranchGroup clusterGroup;
 	private Kmeans kmeans;
+	private int k;
 
-	private SimpleUniverse universe;
-
-	public KmeansVisualization(SimpleUniverse universe) {
+	public KmeansVisualization(int k, SimpleUniverse universe) {
 		this.universe = universe;
-		clusterGroup = new BranchGroup();
-		clusterGroup.setCapability(BranchGroup.ALLOW_DETACH);
+//		clusterGroup = new BranchGroup();
+//		clusterGroup.setCapability(BranchGroup.ALLOW_DETACH);
+		this.k = k;
 
 	}
-
-	public void initKmeans() {
-		kmeans = new Kmeans(5);
-
+	
+	public void destroyVisualization(){
 		clusterGroup.detach();
+	}
+
+	public void initKmeans(Histogram histo) {
 
 		clusterGroup = new BranchGroup();
 		clusterGroup.setCapability(BranchGroup.ALLOW_DETACH);
 
-		for (Cluster c : kmeans.getClusters()) {
+		kmeans = new Kmeans(k);
+
+		for (Cluster c : kmeans.step(histo)) {
 			Transform3D transform3d = new Transform3D();
 			transform3d.setTranslation(new Vector3f(((float) c.getCenter().getR() / 255.0f) - 0.5f,
 					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f));

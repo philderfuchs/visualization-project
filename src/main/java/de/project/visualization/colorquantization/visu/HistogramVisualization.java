@@ -26,7 +26,7 @@ import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 import de.project.visualization.colorquantization.entities.*;
-import de.project.visualization.kmeans.Kmeans;
+import de.project.visualization.colorquantization.kmeans.Kmeans;
 
 public class HistogramVisualization {
 

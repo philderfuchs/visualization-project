@@ -1,4 +1,4 @@
-package de.project.visualization.kmeans;
+package de.project.visualization.colorquantization.kmeans;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,22 +18,48 @@ public class Kmeans {
 	public Kmeans(int k) {
 		this.k = k;
 		clusters = new ArrayList<Cluster>();
-		// initialize Clusters
-		for (int i = 0; i < k; i++) {
-			clusters.add(new Cluster(new Histogram(), new Pixel((int) (Math.random() * 255),
-					(int) (Math.random() * 255), (int) (Math.random() * 255), 1)));
-
-		}
-
 	}
 
-	public void step(Histogram histogram) {
+	public ArrayList<Cluster> step(Histogram histogram) {
 
+		if (clusters.size() == 0) {
+			// clusters not yet initialized
+			// initialize random clusters
+			System.out.println("initializ clusters");
+			for (int i = 0; i < k; i++) {
+				clusters.add(new Cluster(new Histogram(), new Pixel((int) (Math.random() * 255),
+						(int) (Math.random() * 255), (int) (Math.random() * 255), 1)));
+			}
+		} else {
+			// clusters already initialized
+			// move of clusters
+			System.out.println("move clusters");
+			for (Cluster c : clusters) {
+				if (c.getHistogram().getLength() == 0) {
+					continue;
+				}
+
+				long meanR = 0;
+				long meanG = 0;
+				long meanB = 0;
+				for (Pixel p : c.getHistogram().getPixelList()) {
+					meanR += p.getR() * p.getCount();
+					meanG += p.getG() * p.getCount();
+					meanB += p.getB() * p.getCount();
+				}
+				meanR = meanR / c.getHistogram().getCountOfPixels();
+				meanG = meanG / c.getHistogram().getCountOfPixels();
+				meanB = meanB / c.getHistogram().getCountOfPixels();
+				Pixel newMean = new Pixel((int) meanR, (int) meanG, (int) meanB, 1);
+				c.setCenter(newMean);
+			}
+		}
+		
 		for (Cluster c : clusters) {
-			// System.out.println(h.getHistogram().getCountOfPixels());
 			c.getHistogram().getPixelList().clear();
 		}
 
+		System.out.println("calculate closest values");
 		// put each pixel in the histogram in the closest cluster
 		for (Pixel p : histogram.getPixelList()) {
 			double minDistance = Double.MAX_VALUE;
@@ -47,27 +73,8 @@ public class Kmeans {
 			}
 			closestCluster.getHistogram().add(p);
 		}
-
-		// move of clusters
-		for (Cluster c : clusters) {
-			if (c.getHistogram().getLength() == 0) {
-				continue;
-			}
-
-			long meanR = 0;
-			long meanG = 0;
-			long meanB = 0;
-			for (Pixel p : c.getHistogram().getPixelList()) {
-				meanR += p.getR() * p.getCount();
-				meanG += p.getG() * p.getCount();
-				meanB += p.getB() * p.getCount();
-			}
-			meanR = meanR / c.getHistogram().getCountOfPixels();
-			meanG = meanG / c.getHistogram().getCountOfPixels();
-			meanB = meanB / c.getHistogram().getCountOfPixels();
-			Pixel newMean = new Pixel((int) meanR, (int) meanG, (int) meanB, 1);
-			c.setCenter(newMean);
-		}
+		
+		return clusters;
 
 	}
 

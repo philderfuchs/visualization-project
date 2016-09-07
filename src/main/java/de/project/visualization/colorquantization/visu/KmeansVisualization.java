@@ -39,14 +39,14 @@ public class KmeansVisualization {
 		clusterGroup.detach();
 	}
 
-	public void initKmeans(Histogram histo) {
+	public ArrayList<Cluster> initKmeans(Histogram histo) {
 
 		clusterGroup = new BranchGroup();
 		clusterGroup.setCapability(BranchGroup.ALLOW_DETACH);
 
 		kmeans = new Kmeans(k);
-
-		for (Cluster c : kmeans.step(histo)) {
+		ArrayList<Cluster> clusters = kmeans.step(histo);
+		for (Cluster c : clusters) {
 			Transform3D transform3d = new Transform3D();
 			transform3d.setTranslation(new Vector3f(((float) c.getCenter().getR() / 255.0f) - 0.5f,
 					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f));
@@ -60,10 +60,11 @@ public class KmeansVisualization {
 			clusterGroup.addChild(transformGroup);
 		}
 		universe.addBranchGraph(clusterGroup);
+		return clusters;
 	}
 
-	public void step(Histogram histo) {
-
+	public ArrayList<Cluster> step(Histogram histo) {
+	
 		kmeans.step(histo);
 		ArrayList<Cluster> clusters = kmeans.getClusters();
 		Enumeration<Node> children = clusterGroup.getAllChildren();
@@ -76,5 +77,6 @@ public class KmeansVisualization {
 					((float) p.getG() / 255.0f) - 0.5f, ((float) p.getB() / 255.0f) - 0.5f));
 			transformGroup.setTransform(transform3d);
 		}
+		return clusters;
 	}
 }

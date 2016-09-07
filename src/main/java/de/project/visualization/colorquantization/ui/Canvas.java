@@ -2,7 +2,7 @@ package de.project.visualization.colorquantization.ui;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
-import de.project.visualization.colorquantization.entities.Histogram;
+import de.project.visualization.colorquantization.entities.*;
 import de.project.visualization.colorquantization.read.ImageReader;
 import de.project.visualization.colorquantization.visu.HistogramVisualization;
 import de.project.visualization.colorquantization.visu.KmeansVisualization;
@@ -26,14 +26,16 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class Canvas extends JPanel implements ActionListener {
 
 	private KmeansVisualization kmeansVisu;
 	private Histogram histo;
 	private SimpleUniverse universe;
+	private JPanel clusterColorsPanel;
 	
-	private static String filename = "djmel.jpg";
+	private static String filename = "kanye_small.jpg";
 
 	public Canvas() {
 		setLayout(new BorderLayout());
@@ -43,17 +45,18 @@ public class Canvas extends JPanel implements ActionListener {
 		add("Center", canvas);
 
 		
-		JPanel southPanel = new JPanel();
+		JPanel kmeansControlPanel = new JPanel();
 		JButton init = new JButton("init");
 		init.addActionListener(this);
 		JButton step = new JButton("step");
 		step.addActionListener(this);
 
-		southPanel.add(init);
-		southPanel.add(step);
-		southPanel.add(new ClusterLabel());
-		add("South", southPanel);
-		add("North", new JLabel(filename));
+		kmeansControlPanel.add(init);
+		kmeansControlPanel.add(step);
+		add("North", kmeansControlPanel);
+		
+		clusterColorsPanel = new JPanel();
+		add("South", clusterColorsPanel);
 
 		try {
 			histo = new ImageReader("resources/" + filename).getHistogram();
@@ -72,11 +75,21 @@ public class Canvas extends JPanel implements ActionListener {
 				kmeansVisu.destroyVisualization();
 			}
 			kmeansVisu = new KmeansVisualization(5, universe);
-			kmeansVisu.initKmeans(histo);
+			setUpLabels(kmeansVisu.initKmeans(histo));
 		}
 		if (e.getActionCommand().equals("step")) {
-			kmeansVisu.step(histo);
+			setUpLabels(kmeansVisu.step(histo));
 		}
+
+	}
+	
+	private void setUpLabels(ArrayList<Cluster> clusters) {
+		clusterColorsPanel.removeAll();
+		for(Cluster c : clusters) {
+			clusterColorsPanel.add(new ClusterLabel(c));
+		}
+		clusterColorsPanel.revalidate();
+		clusterColorsPanel.repaint();
 
 	}
 

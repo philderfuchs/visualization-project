@@ -3,6 +3,7 @@ package de.project.visualization.colorquantization.visu;
 import java.util.ArrayList;
 import java.util.Enumeration;
 
+import javax.media.j3d.Alpha;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
@@ -11,6 +12,7 @@ import javax.media.j3d.Node;
 import javax.media.j3d.PointArray;
 import javax.media.j3d.PointAttributes;
 import javax.media.j3d.PolygonAttributes;
+import javax.media.j3d.PositionPathInterpolator;
 import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
@@ -25,6 +27,7 @@ import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
 import de.project.visualization.colorquantization.entities.Cluster;
+import de.project.visualization.colorquantization.entities.Coordinates;
 import de.project.visualization.colorquantization.entities.Histogram;
 import de.project.visualization.colorquantization.entities.Pixel;
 import de.project.visualization.colorquantization.entities.VisualCluster;
@@ -60,8 +63,9 @@ public class KmeansVisualization {
 
 		for (Cluster c : clusters) {
 			Transform3D transform3d = new Transform3D();
-			transform3d.setTranslation(new Vector3f(((float) c.getCenter().getR() / 255.0f) - 0.5f,
-					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f));
+			Coordinates coordinates = new Coordinates(((float) c.getCenter().getR() / 255.0f) - 0.5f,
+					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f);
+			transform3d.setTranslation(new Vector3f(coordinates.getX(), coordinates.getY(), coordinates.getZ()));
 			TransformGroup transformGroup = new TransformGroup(transform3d);
 			transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 			Appearance appearance = new Appearance();
@@ -72,7 +76,7 @@ public class KmeansVisualization {
 			Sphere clusterCenter = new Sphere(0.05f, appearance);
 			clusterCenter.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
 			transformGroup.addChild(clusterCenter);
-			vClusters.add(new VisualCluster(c, clusterCenter));
+			vClusters.add(new VisualCluster(c, clusterCenter, coordinates));
 			clusterCentersGroup.addChild(transformGroup);
 		}
 		universe.addBranchGraph(clusterCentersGroup);
@@ -87,17 +91,19 @@ public class KmeansVisualization {
 
 		Enumeration<Node> children = clusterCentersGroup.getAllChildren();
 		int i = 0;
+
 		while (children.hasMoreElements()) {
 			TransformGroup transformGroup = (TransformGroup) children.nextElement();
 			Transform3D transform3d = new Transform3D();
 			Cluster c = clusters.get(i++);
-			Pixel p = c.getCenter();
-			transform3d.setTranslation(new Vector3f(((float) p.getR() / 255.0f) - 0.5f,
-					((float) p.getG() / 255.0f) - 0.5f, ((float) p.getB() / 255.0f) - 0.5f));
+			Coordinates coordinates = new Coordinates(((float) c.getCenter().getR() / 255.0f) - 0.5f,
+					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f);
+			transform3d.setTranslation(new Vector3f(coordinates.getX(), coordinates.getY(), coordinates.getZ()));
 			transformGroup.setTransform(transform3d);
-			vClusters.add(new VisualCluster(c, (Primitive) transformGroup.getChild(0)));
+			vClusters.add(new VisualCluster(c, (Primitive) transformGroup.getChild(0), coordinates));
 
 		}
+		
 		return vClusters;
 	}
 
@@ -117,7 +123,6 @@ public class KmeansVisualization {
 			pointArray.setCoordinates(0, pointCoordinates);
 
 			PointAttributes pointAttributes = new PointAttributes();
-			pointAttributes.setPointSize(1.0f);// 10 pixel-wide point
 			pointAttributes.setPointAntialiasingEnable(true);
 
 			Appearance valuesAppearance = new Appearance();

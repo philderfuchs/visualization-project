@@ -32,7 +32,7 @@ public class ClusterLabel extends JLabel {
 		}
 		
 		public void mouseExited(MouseEvent e) {
-			visu.hideCluster();
+			visu.hideCluster(c);
 		}
 
 	}

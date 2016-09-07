@@ -66,6 +66,7 @@ public class KmeansVisualization {
 			transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
 			Appearance appearance = new Appearance();
 			appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
+			appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
 			appearance.setPolygonAttributes(
 					new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
 			Sphere clusterCenter = new Sphere(0.05f, appearance);
@@ -127,17 +128,22 @@ public class KmeansVisualization {
 			Shape3D shape = new Shape3D(pointArray, valuesAppearance);
 			activeValuesGroup.addChild(shape);
 		}
-//
-//		Appearance centerAppearance = new Appearance();
-//		centerAppearance.setPolygonAttributes(
-//				new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0.0f));
-		c.getPrimitive().getAppearance().setPolygonAttributes(
-				new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0.0f));
+
+		// c.getPrimitive().getAppearance().setPolygonAttributes(
+		// new PolygonAttributes(PolygonAttributes.POLYGON_FILL,
+		// PolygonAttributes.CULL_NONE, 0.0f));
+		c.getPrimitive().getAppearance()
+				.setColoringAttributes(new ColoringAttributes((float) c.getCenter().getR() / 255.0f,
+						(float) c.getCenter().getG() / 255.0f, (float) c.getCenter().getB() / 255.0f,
+						ColoringAttributes.SHADE_FLAT));
 
 		universe.addBranchGraph(activeValuesGroup);
 	}
 
-	public void hideCluster() {
+	public void hideCluster(VisualCluster c) {
 		activeValuesGroup.detach();
+		c.getPrimitive().getAppearance().setPolygonAttributes(
+				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
+		c.getPrimitive().getAppearance().setColoringAttributes(new ColoringAttributes());
 	}
 }

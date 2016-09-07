@@ -90,6 +90,8 @@ public class KmeansVisualization {
 	
 	public void showCluster(Cluster c) {
 		activeValuesGroup = new BranchGroup();
+		activeValuesGroup.setCapability(BranchGroup.ALLOW_DETACH);
+
 
 		PointArray pointArray = new PointArray(c.getHistogram().getLength(), GeometryArray.COORDINATES);
 		Point3f[] pointCoordinates = new Point3f[c.getHistogram().getLength()];
@@ -111,6 +113,9 @@ public class KmeansVisualization {
 		Shape3D shape = new Shape3D(pointArray, appearance);
 		activeValuesGroup.addChild(shape);
 		universe.addBranchGraph(activeValuesGroup);
-		
+	}
+	
+	public void hideCluster() {
+		activeValuesGroup.detach();
 	}
 }

@@ -29,6 +29,10 @@ public class ClusterLabel extends JLabel {
 		public void mouseEntered(MouseEvent e) {
 			visu.showCluster(c);
 		}
+		
+		public void mouseExited(MouseEvent e) {
+			visu.hideCluster();
+		}
 
 	}
 

@@ -46,12 +46,10 @@ public class HistogramVisualization {
 
 		int i = 0;
 		for (Pixel p : histo.getPixelList()) {
-
 			pointCoordinates[i] = new Point3f(((float) p.getR() / 255.0f) - 0.5f, ((float) p.getG() / 255.0f) - 0.5f,
 					((float) p.getB() / 255.0f) - 0.5f);
 			pointColors[i++] = new Color3f(((float) p.getR() / 255.0f), ((float) p.getG() / 255.0f),
 					((float) p.getB() / 255.0f));
-
 		}
 		pointArray.setCoordinates(0, pointCoordinates);
 		pointArray.setColors(0, pointColors);

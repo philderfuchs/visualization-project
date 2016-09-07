@@ -8,10 +8,16 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 
 import de.project.visualization.colorquantization.entities.Cluster;
+import de.project.visualization.colorquantization.visu.KmeansVisualization;
 
 public class ClusterLabel extends JLabel {
 
-	public ClusterLabel(Cluster c) {
+	private Cluster c;
+	private KmeansVisualization visu;
+	
+	public ClusterLabel(Cluster c, KmeansVisualization visu) {
+		this.visu = visu;
+		this.c = c;
 		setBackground(new Color(c.getCenter().getR(), c.getCenter().getG(), c.getCenter().getB()));
 		setOpaque(true);
 		setPreferredSize(new Dimension(100, 100));
@@ -21,8 +27,7 @@ public class ClusterLabel extends JLabel {
 	class LabelAdapter extends MouseAdapter {
 
 		public void mouseEntered(MouseEvent e) {
-			System.out.println("over");
-
+			visu.showCluster(c);
 		}
 
 	}

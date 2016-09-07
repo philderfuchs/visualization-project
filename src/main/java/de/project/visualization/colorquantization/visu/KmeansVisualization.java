@@ -5,12 +5,20 @@ import java.util.Enumeration;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
+import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.GeometryArray;
 import javax.media.j3d.Node;
+import javax.media.j3d.PointArray;
+import javax.media.j3d.PointAttributes;
 import javax.media.j3d.PolygonAttributes;
+import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.vecmath.Color3f;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
+import com.sun.j3d.utils.geometry.Box;
 import com.sun.j3d.utils.geometry.ColorCube;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.universe.SimpleUniverse;
@@ -23,26 +31,26 @@ import de.project.visualization.colorquantization.kmeans.Kmeans;
 public class KmeansVisualization {
 	
 	private SimpleUniverse universe;
-	private BranchGroup clusterGroup;
+	private BranchGroup clusterCentersGroup;
+	private BranchGroup activeValuesGroup;
 	private Kmeans kmeans;
 	private int k;
+	private static KmeansVisualization instance = null;
 
 	public KmeansVisualization(int k, SimpleUniverse universe) {
 		this.universe = universe;
-//		clusterGroup = new BranchGroup();
-//		clusterGroup.setCapability(BranchGroup.ALLOW_DETACH);
-		this.k = k;
 
+		this.k = k;
 	}
 	
 	public void destroyVisualization(){
-		clusterGroup.detach();
+		clusterCentersGroup.detach();
 	}
 
 	public ArrayList<Cluster> initKmeans(Histogram histo) {
 
-		clusterGroup = new BranchGroup();
-		clusterGroup.setCapability(BranchGroup.ALLOW_DETACH);
+		clusterCentersGroup = new BranchGroup();
+		clusterCentersGroup.setCapability(BranchGroup.ALLOW_DETACH);
 
 		kmeans = new Kmeans(k);
 		ArrayList<Cluster> clusters = kmeans.step(histo);
@@ -57,9 +65,9 @@ public class KmeansVisualization {
 					new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
 
 			transformGroup.addChild(new Sphere(0.05f, appearance));
-			clusterGroup.addChild(transformGroup);
+			clusterCentersGroup.addChild(transformGroup);
 		}
-		universe.addBranchGraph(clusterGroup);
+		universe.addBranchGraph(clusterCentersGroup);
 		return clusters;
 	}
 
@@ -67,7 +75,7 @@ public class KmeansVisualization {
 	
 		kmeans.step(histo);
 		ArrayList<Cluster> clusters = kmeans.getClusters();
-		Enumeration<Node> children = clusterGroup.getAllChildren();
+		Enumeration<Node> children = clusterCentersGroup.getAllChildren();
 		int i = 0;
 		while (children.hasMoreElements()) {
 			TransformGroup transformGroup = (TransformGroup) children.nextElement();
@@ -78,5 +86,31 @@ public class KmeansVisualization {
 			transformGroup.setTransform(transform3d);
 		}
 		return clusters;
+	}
+	
+	public void showCluster(Cluster c) {
+		activeValuesGroup = new BranchGroup();
+
+		PointArray pointArray = new PointArray(c.getHistogram().getLength(), GeometryArray.COORDINATES);
+		Point3f[] pointCoordinates = new Point3f[c.getHistogram().getLength()];
+
+		int i = 0;
+		for (Pixel p : c.getHistogram().getPixelList()) {
+			pointCoordinates[i++] = new Point3f(((float) p.getR() / 255.0f) - 0.5f, ((float) p.getG() / 255.0f) - 0.5f,
+					((float) p.getB() / 255.0f) - 0.5f);
+		}
+		pointArray.setCoordinates(0, pointCoordinates);
+		
+		PointAttributes pointAttributes = new PointAttributes();
+		pointAttributes.setPointSize(1.0f);//10 pixel-wide point
+		pointAttributes.setPointAntialiasingEnable(true);
+		
+		Appearance appearance = new Appearance();
+		appearance.setColoringAttributes(new ColoringAttributes(1.0f, 1.0f, 1.0f, ColoringAttributes.SHADE_FLAT));
+		appearance.setPointAttributes(pointAttributes);
+		Shape3D shape = new Shape3D(pointArray, appearance);
+		activeValuesGroup.addChild(shape);
+		universe.addBranchGraph(activeValuesGroup);
+		
 	}
 }

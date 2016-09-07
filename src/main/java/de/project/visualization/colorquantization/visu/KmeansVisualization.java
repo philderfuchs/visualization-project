@@ -84,14 +84,13 @@ public class KmeansVisualization {
 	}
 
 	public ArrayList<VisualCluster> step(Histogram histo) {
-		
+
 		// save original coordinates
 		ArrayList<Coordinates> coordList = new ArrayList<Coordinates>();
-		for(Cluster c : kmeans.getClusters()){
-			coordList.add(new Coordinates(((float) c.getCenter().getR() / 255.0f) - 0.5f,
-					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f));
+		for (Cluster c : kmeans.getClusters()) {
+			coordList.add(calculateCoordinates(c.getCenter().getR(), c.getCenter().getG(), c.getCenter().getB()));
 		}
-		
+
 		kmeans.step(histo);
 		ArrayList<Cluster> clusters = kmeans.getClusters();
 		ArrayList<VisualCluster> vClusters = new ArrayList<VisualCluster>();
@@ -102,15 +101,35 @@ public class KmeansVisualization {
 		while (children.hasMoreElements()) {
 			TransformGroup transformGroup = (TransformGroup) children.nextElement();
 			Transform3D transform3d = new Transform3D();
-			Cluster c = clusters.get(i++);
-			Coordinates coordinates = new Coordinates(((float) c.getCenter().getR() / 255.0f) - 0.5f,
-					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f);
-			transform3d.setTranslation(new Vector3f(coordinates.getX(), coordinates.getY(), coordinates.getZ()));
-			transformGroup.setTransform(transform3d);
+			Cluster c = clusters.get(i);
+			Coordinates coordinates = calculateCoordinates(c.getCenter().getR(), c.getCenter().getG(),
+					c.getCenter().getB());
+			
+			int count = 20;
+			float stepX = (coordinates.getX() - coordList.get(i).getX()) / (float) count;
+			float stepY = (coordinates.getY() - coordList.get(i).getY()) / (float) count;
+			float stepZ = (coordinates.getZ() - coordList.get(i).getZ()) / (float) count;
+
+			for (int j = 1; j <= count; j++) {
+				transform3d.setTranslation(new Vector3f(coordList.get(i).getX() + j * stepX,
+						coordList.get(i).getY() + j * stepY, coordList.get(i).getZ() + j * stepZ));
+				transformGroup.setTransform(transform3d);
+				try {
+					Thread.sleep(5);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+
+			// transform3d.setTranslation(new Vector3f(coordinates.getX(),
+			// coordinates.getY(), coordinates.getZ()));
+			// transformGroup.setTransform(transform3d);
 			vClusters.add(new VisualCluster(c, (Primitive) transformGroup.getChild(0)));
 
+			i++;
 		}
-		
+
 		return vClusters;
 	}
 
@@ -157,5 +176,9 @@ public class KmeansVisualization {
 		c.getPrimitive().getAppearance().setPolygonAttributes(
 				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
 		c.getPrimitive().getAppearance().setColoringAttributes(new ColoringAttributes());
+	}
+
+	private Coordinates calculateCoordinates(int x, int y, int z) {
+		return new Coordinates(((float) x / 255.0f) - 0.5f, ((float) y / 255.0f) - 0.5f, ((float) z / 255.0f) - 0.5f);
 	}
 }

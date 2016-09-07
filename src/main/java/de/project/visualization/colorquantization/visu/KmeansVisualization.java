@@ -76,7 +76,7 @@ public class KmeansVisualization {
 			Sphere clusterCenter = new Sphere(0.05f, appearance);
 			clusterCenter.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
 			transformGroup.addChild(clusterCenter);
-			vClusters.add(new VisualCluster(c, clusterCenter, coordinates));
+			vClusters.add(new VisualCluster(c, clusterCenter));
 			clusterCentersGroup.addChild(transformGroup);
 		}
 		universe.addBranchGraph(clusterCentersGroup);
@@ -84,7 +84,14 @@ public class KmeansVisualization {
 	}
 
 	public ArrayList<VisualCluster> step(Histogram histo) {
-
+		
+		// save original coordinates
+		ArrayList<Coordinates> coordList = new ArrayList<Coordinates>();
+		for(Cluster c : kmeans.getClusters()){
+			coordList.add(new Coordinates(((float) c.getCenter().getR() / 255.0f) - 0.5f,
+					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f));
+		}
+		
 		kmeans.step(histo);
 		ArrayList<Cluster> clusters = kmeans.getClusters();
 		ArrayList<VisualCluster> vClusters = new ArrayList<VisualCluster>();
@@ -100,7 +107,7 @@ public class KmeansVisualization {
 					((float) c.getCenter().getG() / 255.0f) - 0.5f, ((float) c.getCenter().getB() / 255.0f) - 0.5f);
 			transform3d.setTranslation(new Vector3f(coordinates.getX(), coordinates.getY(), coordinates.getZ()));
 			transformGroup.setTransform(transform3d);
-			vClusters.add(new VisualCluster(c, (Primitive) transformGroup.getChild(0), coordinates));
+			vClusters.add(new VisualCluster(c, (Primitive) transformGroup.getChild(0)));
 
 		}
 		

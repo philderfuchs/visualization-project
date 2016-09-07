@@ -2,26 +2,28 @@ package de.project.visualization.colorquantization.entities;
 
 import javax.media.j3d.TransformGroup;
 
+import com.sun.j3d.utils.geometry.Primitive;
+
 public class VisualCluster extends Cluster {
 	
-	private TransformGroup transformGroup;
+	private Primitive primitive;
 	
-	public VisualCluster(Histogram histo, Pixel center, TransformGroup transformGroup) {
+	public VisualCluster(Histogram histo, Pixel center, Primitive primitive) {
 		super(histo, center);
-		this.transformGroup = transformGroup;
+		this.primitive = primitive;
 	}
 	
-	public VisualCluster(Cluster c, TransformGroup transformGroup) {
+	public VisualCluster(Cluster c, Primitive primitive) {
 		super(c.getHistogram(), c.getCenter());
-		this.transformGroup = transformGroup;
+		this.primitive = primitive;
 	}
 
-	public TransformGroup getTransformGroup() {
-		return transformGroup;
+	public Primitive getPrimitive() {
+		return primitive;
 	}
 
-	public void setTransformGroup(TransformGroup transformGroup) {
-		this.transformGroup = transformGroup;
+	public void setPrimitive(Primitive primitive) {
+		this.primitive = primitive;
 	}
 
 }

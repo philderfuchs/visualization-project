@@ -8,14 +8,15 @@ import java.awt.event.MouseEvent;
 import javax.swing.JLabel;
 
 import de.project.visualization.colorquantization.entities.Cluster;
+import de.project.visualization.colorquantization.entities.VisualCluster;
 import de.project.visualization.colorquantization.visu.KmeansVisualization;
 
 public class ClusterLabel extends JLabel {
 
-	private Cluster c;
+	private VisualCluster c;
 	private KmeansVisualization visu;
 	
-	public ClusterLabel(Cluster c, KmeansVisualization visu) {
+	public ClusterLabel(VisualCluster c, KmeansVisualization visu) {
 		this.visu = visu;
 		this.c = c;
 		setBackground(new Color(c.getCenter().getR(), c.getCenter().getG(), c.getCenter().getB()));

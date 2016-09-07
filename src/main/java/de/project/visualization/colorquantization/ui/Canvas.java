@@ -83,9 +83,9 @@ public class Canvas extends JPanel implements ActionListener {
 
 	}
 	
-	private void setUpLabels(ArrayList<Cluster> clusters) {
+	private void setUpLabels(ArrayList<VisualCluster> clusters) {
 		clusterColorsPanel.removeAll();
-		for(Cluster c : clusters) {
+		for(VisualCluster c : clusters) {
 			clusterColorsPanel.add(new ClusterLabel(c, kmeansVisu));
 		}
 		clusterColorsPanel.revalidate();

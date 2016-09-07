@@ -17,10 +17,14 @@ import javax.swing.JScrollPane;
 import java.awt.GraphicsConfiguration;
 
 import java.awt.BorderLayout;
-
+import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 public class Canvas extends JPanel implements ActionListener {
@@ -47,6 +51,7 @@ public class Canvas extends JPanel implements ActionListener {
 
 		southPanel.add(init);
 		southPanel.add(step);
+		southPanel.add(new ClusterLabel());
 		add("South", southPanel);
 		add("North", new JLabel(filename));
 
@@ -60,15 +65,6 @@ public class Canvas extends JPanel implements ActionListener {
 		universe = visu.visualizeHistogram(canvas);
 	}
 
-	public static void main(String[] args) {
-
-		JFrame frame = new JFrame();
-		frame.add(new JScrollPane(new Canvas()));
-		frame.setSize(600, 600);
-		frame.setVisible(true);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
-	}
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("init")) {
@@ -81,6 +77,16 @@ public class Canvas extends JPanel implements ActionListener {
 		if (e.getActionCommand().equals("step")) {
 			kmeansVisu.step(histo);
 		}
+
+	}
+
+	public static void main(String[] args) {
+
+		JFrame frame = new JFrame();
+		frame.add(new JScrollPane(new Canvas()));
+		frame.setSize(600, 600);
+		frame.setVisible(true);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	}
 

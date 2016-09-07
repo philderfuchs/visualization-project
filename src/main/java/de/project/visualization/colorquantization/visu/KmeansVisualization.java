@@ -29,7 +29,7 @@ import de.project.visualization.colorquantization.entities.Pixel;
 import de.project.visualization.colorquantization.kmeans.Kmeans;
 
 public class KmeansVisualization {
-	
+
 	private SimpleUniverse universe;
 	private BranchGroup clusterCentersGroup;
 	private BranchGroup activeValuesGroup;
@@ -42,8 +42,8 @@ public class KmeansVisualization {
 
 		this.k = k;
 	}
-	
-	public void destroyVisualization(){
+
+	public void destroyVisualization() {
 		clusterCentersGroup.detach();
 	}
 
@@ -72,7 +72,7 @@ public class KmeansVisualization {
 	}
 
 	public ArrayList<Cluster> step(Histogram histo) {
-	
+
 		kmeans.step(histo);
 		ArrayList<Cluster> clusters = kmeans.getClusters();
 		Enumeration<Node> children = clusterCentersGroup.getAllChildren();
@@ -87,34 +87,37 @@ public class KmeansVisualization {
 		}
 		return clusters;
 	}
-	
+
 	public void showCluster(Cluster c) {
 		activeValuesGroup = new BranchGroup();
 		activeValuesGroup.setCapability(BranchGroup.ALLOW_DETACH);
+		if (c.getHistogram().getLength() > 0) {
 
+			PointArray pointArray = new PointArray(c.getHistogram().getLength(), GeometryArray.COORDINATES);
+			Point3f[] pointCoordinates = new Point3f[c.getHistogram().getLength()];
 
-		PointArray pointArray = new PointArray(c.getHistogram().getLength(), GeometryArray.COORDINATES);
-		Point3f[] pointCoordinates = new Point3f[c.getHistogram().getLength()];
+			int i = 0;
+			for (Pixel p : c.getHistogram().getPixelList()) {
+				pointCoordinates[i++] = new Point3f(((float) p.getR() / 255.0f) - 0.5f,
+						((float) p.getG() / 255.0f) - 0.5f, ((float) p.getB() / 255.0f) - 0.5f);
+			}
+			pointArray.setCoordinates(0, pointCoordinates);
 
-		int i = 0;
-		for (Pixel p : c.getHistogram().getPixelList()) {
-			pointCoordinates[i++] = new Point3f(((float) p.getR() / 255.0f) - 0.5f, ((float) p.getG() / 255.0f) - 0.5f,
-					((float) p.getB() / 255.0f) - 0.5f);
+			PointAttributes pointAttributes = new PointAttributes();
+			pointAttributes.setPointSize(1.0f);// 10 pixel-wide point
+			pointAttributes.setPointAntialiasingEnable(true);
+
+			Appearance appearance = new Appearance();
+			appearance.setColoringAttributes(
+					new ColoringAttributes((float) c.getCenter().getR() / 255.0f, (float) c.getCenter().getG() / 255.0f,
+							(float) c.getCenter().getB() / 255.0f, ColoringAttributes.SHADE_FLAT));
+			appearance.setPointAttributes(pointAttributes);
+			Shape3D shape = new Shape3D(pointArray, appearance);
+			activeValuesGroup.addChild(shape);
 		}
-		pointArray.setCoordinates(0, pointCoordinates);
-		
-		PointAttributes pointAttributes = new PointAttributes();
-		pointAttributes.setPointSize(1.0f);//10 pixel-wide point
-		pointAttributes.setPointAntialiasingEnable(true);
-		
-		Appearance appearance = new Appearance();
-		appearance.setColoringAttributes(new ColoringAttributes(1.0f, 1.0f, 1.0f, ColoringAttributes.SHADE_FLAT));
-		appearance.setPointAttributes(pointAttributes);
-		Shape3D shape = new Shape3D(pointArray, appearance);
-		activeValuesGroup.addChild(shape);
 		universe.addBranchGraph(activeValuesGroup);
 	}
-	
+
 	public void hideCluster() {
 		activeValuesGroup.detach();
 	}

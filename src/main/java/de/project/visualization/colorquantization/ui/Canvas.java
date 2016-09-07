@@ -48,7 +48,7 @@ public class Canvas extends JPanel implements ActionListener {
 		southPanel.add(init);
 		southPanel.add(step);
 		add("South", southPanel);
-		add("North", new JLabel("filename"));
+		add("North", new JLabel(filename));
 
 		try {
 			histo = new ImageReader("resources/" + filename).getHistogram();

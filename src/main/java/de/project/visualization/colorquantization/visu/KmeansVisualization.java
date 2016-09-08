@@ -37,14 +37,17 @@ public class KmeansVisualization {
 
 	private SimpleUniverse universe;
 	private BranchGroup clusterCentersGroup;
-	private BranchGroup activeValuesGroup;
+	private BranchGroup activeValues;
 	private Kmeans kmeans;
 	private int k;
 	private static KmeansVisualization instance = null;
 
 	public KmeansVisualization(int k, SimpleUniverse universe) {
+		this.activeValues = new BranchGroup();
+		activeValues.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
+		activeValues.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		this.universe = universe;
-
+		this.universe.addBranchGraph(activeValues);
 		this.k = k;
 	}
 
@@ -134,8 +137,8 @@ public class KmeansVisualization {
 	}
 
 	public void showCluster(VisualCluster c) {
-		activeValuesGroup = new BranchGroup();
-		activeValuesGroup.setCapability(BranchGroup.ALLOW_DETACH);
+		BranchGroup values = new BranchGroup();
+		values.setCapability(BranchGroup.ALLOW_DETACH);
 		if (c.getHistogram().getLength() > 0) {
 
 			PointArray pointArray = new PointArray(c.getHistogram().getLength(), GeometryArray.COORDINATES);
@@ -157,7 +160,7 @@ public class KmeansVisualization {
 							(float) c.getCenter().getB() / 255.0f, ColoringAttributes.SHADE_FLAT));
 			valuesAppearance.setPointAttributes(pointAttributes);
 			Shape3D shape = new Shape3D(pointArray, valuesAppearance);
-			activeValuesGroup.addChild(shape);
+			values.addChild(shape);
 		}
 
 		// c.getPrimitive().getAppearance().setPolygonAttributes(
@@ -167,12 +170,13 @@ public class KmeansVisualization {
 				.setColoringAttributes(new ColoringAttributes((float) c.getCenter().getR() / 255.0f,
 						(float) c.getCenter().getG() / 255.0f, (float) c.getCenter().getB() / 255.0f,
 						ColoringAttributes.SHADE_FLAT));
-
-		universe.addBranchGraph(activeValuesGroup);
+		
+		activeValues.addChild(values);
 	}
 
 	public void hideCluster(VisualCluster c) {
-		activeValuesGroup.detach();
+//		activeValues.detach();
+		activeValues.removeAllChildren();
 		c.getPrimitive().getAppearance().setPolygonAttributes(
 				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
 		c.getPrimitive().getAppearance().setColoringAttributes(new ColoringAttributes());

@@ -60,8 +60,6 @@ public class Canvas extends JPanel implements ActionListener {
 		add("North", kmeansControlPanel);
 		
 		clusterColorsPanel = new JPanel();
-//		JButton all = new JButton("all");
-//		clusterColorsPanel.add(all);
 		add("South", clusterColorsPanel);
 
 		try {
@@ -91,6 +89,8 @@ public class Canvas extends JPanel implements ActionListener {
 	
 	private void setUpLabels(ArrayList<VisualCluster> clusters) {
 		clusterColorsPanel.removeAll();
+		JButton all = new JButton("all");
+		clusterColorsPanel.add(all);
 		for(VisualCluster c : clusters) {
 			clusterColorsPanel.add(new ClusterLabel(c, kmeansVisu));
 		}

@@ -4,6 +4,7 @@ import com.sun.j3d.utils.universe.SimpleUniverse;
 
 import de.project.visualization.colorquantization.entities.*;
 import de.project.visualization.colorquantization.read.ImageReader;
+import de.project.visualization.colorquantization.visu.ClusteringAlgorithmVisualization;
 import de.project.visualization.colorquantization.visu.HistogramVisualization;
 import de.project.visualization.colorquantization.visu.KmeansVisualization;
 
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 
 public class Canvas extends JPanel implements ActionListener {
 
-	private KmeansVisualization kmeansVisu;
+	private ClusteringAlgorithmVisualization kmeansVisu;
 	private Histogram histo;
 	private SimpleUniverse universe;
 	private JPanel clusterColorsPanel;

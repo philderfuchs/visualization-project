@@ -41,6 +41,7 @@ public class KmeansVisualization {
 	private Kmeans kmeans;
 	private int k;
 	private static KmeansVisualization instance = null;
+	private ArrayList<VisualCluster> vClusters;
 
 	public KmeansVisualization(int k, SimpleUniverse universe) {
 		this.activeValues = new BranchGroup();
@@ -53,6 +54,7 @@ public class KmeansVisualization {
 
 	public void destroyVisualization() {
 		clusterCentersGroup.detach();
+		hideAllClusters();
 	}
 
 	public ArrayList<VisualCluster> initKmeans(Histogram histo) {
@@ -62,7 +64,7 @@ public class KmeansVisualization {
 
 		kmeans = new Kmeans(k);
 		ArrayList<Cluster> clusters = kmeans.step(histo);
-		ArrayList<VisualCluster> vClusters = new ArrayList<VisualCluster>();
+		vClusters = new ArrayList<VisualCluster>();
 
 		for (Cluster c : clusters) {
 			Transform3D transform3d = new Transform3D();
@@ -96,7 +98,7 @@ public class KmeansVisualization {
 
 		kmeans.step(histo);
 		ArrayList<Cluster> clusters = kmeans.getClusters();
-		ArrayList<VisualCluster> vClusters = new ArrayList<VisualCluster>();
+		vClusters = new ArrayList<VisualCluster>();
 
 		Enumeration<Node> children = clusterCentersGroup.getAllChildren();
 		int i = 0;
@@ -107,7 +109,7 @@ public class KmeansVisualization {
 			Cluster c = clusters.get(i);
 			Coordinates coordinates = calculateCoordinates(c.getCenter().getR(), c.getCenter().getG(),
 					c.getCenter().getB());
-			
+
 			int count = 30;
 			float stepX = (coordinates.getX() - coordList.get(i).getX()) / (float) count;
 			float stepY = (coordinates.getY() - coordList.get(i).getY()) / (float) count;
@@ -170,19 +172,42 @@ public class KmeansVisualization {
 				.setColoringAttributes(new ColoringAttributes((float) c.getCenter().getR() / 255.0f,
 						(float) c.getCenter().getG() / 255.0f, (float) c.getCenter().getB() / 255.0f,
 						ColoringAttributes.SHADE_FLAT));
-		
+
 		activeValues.addChild(values);
 	}
 
+	/*
+	 * right now: strange behaviour hides only the cluster center of given
+	 * visualcluster, but hides ALL values.
+	 */
 	public void hideCluster(VisualCluster c) {
-//		activeValues.detach();
 		activeValues.removeAllChildren();
 		c.getPrimitive().getAppearance().setPolygonAttributes(
 				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
 		c.getPrimitive().getAppearance().setColoringAttributes(new ColoringAttributes());
 	}
+	
+	public void showAllClusters() {
+		for(VisualCluster c : vClusters){
+			this.showCluster(c);
+		}
+	}
+	
+	public void hideAllClusters() {
+		for(VisualCluster c : vClusters){
+			this.hideCluster(c);
+		}
+	}
 
 	private Coordinates calculateCoordinates(int x, int y, int z) {
 		return new Coordinates(((float) x / 255.0f) - 0.5f, ((float) y / 255.0f) - 0.5f, ((float) z / 255.0f) - 0.5f);
+	}
+
+	public ArrayList<VisualCluster> getVisualClusters() {
+		return vClusters;
+	}
+
+	public void setVisualClusters(ArrayList<VisualCluster> vClusters) {
+		this.vClusters = vClusters;
 	}
 }

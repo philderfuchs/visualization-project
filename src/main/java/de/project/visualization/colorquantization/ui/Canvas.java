@@ -36,7 +36,9 @@ public class Canvas extends JPanel implements ActionListener {
 	private SimpleUniverse universe;
 	private JPanel clusterColorsPanel;
 	private JTextField k;
-	
+	private boolean showClustersMode = false;
+	private ArrayList<ClusterLabel> clusterLabels;
+
 	private static String filename = "kanye_small.jpg";
 
 	public Canvas() {
@@ -46,7 +48,6 @@ public class Canvas extends JPanel implements ActionListener {
 		Canvas3D canvas = new Canvas3D(config);
 		add("Center", canvas);
 
-		
 		JPanel kmeansControlPanel = new JPanel();
 		k = new JTextField("5", 5);
 		JButton init = new JButton("init");
@@ -58,7 +59,7 @@ public class Canvas extends JPanel implements ActionListener {
 		kmeansControlPanel.add(init);
 		kmeansControlPanel.add(step);
 		add("North", kmeansControlPanel);
-		
+
 		clusterColorsPanel = new JPanel();
 		add("South", clusterColorsPanel);
 
@@ -72,7 +73,6 @@ public class Canvas extends JPanel implements ActionListener {
 		universe = visu.visualizeHistogram(canvas);
 	}
 
-
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("init")) {
 			if (kmeansVisu != null) {
@@ -82,21 +82,43 @@ public class Canvas extends JPanel implements ActionListener {
 			setUpLabels(kmeansVisu.initKmeans(histo));
 		}
 		if (e.getActionCommand().equals("step")) {
+			kmeansVisu.hideAllClusters();
 			setUpLabels(kmeansVisu.step(histo));
+			if (showClustersMode) {
+				kmeansVisu.showAllClusters();
+			}
+		}
+		if (e.getActionCommand().equals("all")) {
+			showClustersMode = !showClustersMode;
+			if (showClustersMode) {
+				kmeansVisu.showAllClusters();
+				for(ClusterLabel l : clusterLabels) {
+					l.setActive(false);
+				}
+			} else {
+				kmeansVisu.hideAllClusters();
+				for(ClusterLabel l : clusterLabels) {
+					l.setActive(true);
+				}
+			}
 		}
 
 	}
-	
+
 	private void setUpLabels(ArrayList<VisualCluster> clusters) {
 		clusterColorsPanel.removeAll();
 		JButton all = new JButton("all");
+		all.addActionListener(this);
 		clusterColorsPanel.add(all);
-		for(VisualCluster c : clusters) {
-			clusterColorsPanel.add(new ClusterLabel(c, kmeansVisu));
+		
+		clusterLabels = new ArrayList<ClusterLabel>();
+		for (VisualCluster c : clusters) {
+			ClusterLabel label = new ClusterLabel(c, kmeansVisu, !showClustersMode);
+			clusterLabels.add(label);
+			clusterColorsPanel.add(label);
 		}
 		clusterColorsPanel.revalidate();
 		clusterColorsPanel.repaint();
-
 	}
 
 	public static void main(String[] args) {

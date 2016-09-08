@@ -15,26 +15,46 @@ public class ClusterLabel extends JLabel {
 
 	private VisualCluster c;
 	private KmeansVisualization visu;
-	
+	private boolean active;
+
 	public ClusterLabel(VisualCluster c, KmeansVisualization visu) {
 		this.visu = visu;
 		this.c = c;
+		this.active = true;
 		setBackground(new Color(c.getCenter().getR(), c.getCenter().getG(), c.getCenter().getB()));
 		setOpaque(true);
 		setPreferredSize(new Dimension(100, 100));
 		addMouseListener(new LabelAdapter());
 	}
 
+	public ClusterLabel(VisualCluster c, KmeansVisualization visu, boolean active) {
+		this(c, visu);
+		this.active = active;
+	}
+
 	class LabelAdapter extends MouseAdapter {
 
 		public void mouseEntered(MouseEvent e) {
-			visu.showCluster(c);
-		}
-		
-		public void mouseExited(MouseEvent e) {
-			visu.hideCluster(c);
+			if (active) {
+				visu.hideAllClusters();
+				visu.showCluster(c);
+			}
 		}
 
+		public void mouseExited(MouseEvent e) {
+			if (active) {
+				visu.hideCluster(c);
+			}
+		}
+
+	}
+
+	public boolean isActive() {
+		return active;
+	}
+
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 
 }

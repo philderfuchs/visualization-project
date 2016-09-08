@@ -1,4 +1,4 @@
-package de.project.visualization.colorquantization.kmeans;
+package de.project.visualization.colorquantization.clustering;
 
 import java.util.ArrayList;
 import java.util.Collections;

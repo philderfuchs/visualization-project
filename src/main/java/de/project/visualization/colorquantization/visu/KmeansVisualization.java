@@ -26,14 +26,14 @@ import com.sun.j3d.utils.geometry.Primitive;
 import com.sun.j3d.utils.geometry.Sphere;
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
+import de.project.visualization.colorquantization.clustering.Kmeans;
 import de.project.visualization.colorquantization.entities.Cluster;
 import de.project.visualization.colorquantization.entities.Coordinates;
 import de.project.visualization.colorquantization.entities.Histogram;
 import de.project.visualization.colorquantization.entities.Pixel;
 import de.project.visualization.colorquantization.entities.VisualCluster;
-import de.project.visualization.colorquantization.kmeans.Kmeans;
 
-public class KmeansVisualization {
+public class KmeansVisualization implements ClusteringAlgorithmVisualization {
 
 	private SimpleUniverse universe;
 	private BranchGroup clusterCentersGroup;
@@ -57,7 +57,7 @@ public class KmeansVisualization {
 		hideAllClusters();
 	}
 
-	public ArrayList<VisualCluster> initKmeans(Histogram histo) {
+	public ArrayList<VisualCluster> init(Histogram histo) {
 
 		clusterCentersGroup = new BranchGroup();
 		clusterCentersGroup.setCapability(BranchGroup.ALLOW_DETACH);

@@ -79,7 +79,7 @@ public class Canvas extends JPanel implements ActionListener {
 				kmeansVisu.destroyVisualization();
 			}
 			kmeansVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
-			setUpLabels(kmeansVisu.initKmeans(histo));
+			setUpLabels(kmeansVisu.init(histo));
 		}
 		if (e.getActionCommand().equals("step")) {
 			kmeansVisu.hideAllClusters();

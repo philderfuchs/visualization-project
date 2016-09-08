@@ -40,7 +40,7 @@ public class MainWindow extends JPanel implements ActionListener {
 	private boolean showClustersMode = false;
 	private ArrayList<ClusterLabel> clusterLabels;
 
-	private static String filename = "kanye_small.jpg";
+	private static String filename = "djmel.jpg";
 
 	public MainWindow() {
 		setLayout(new BorderLayout());

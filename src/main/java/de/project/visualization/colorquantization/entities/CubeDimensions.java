@@ -20,6 +20,44 @@ public class CubeDimensions {
 		this.bMin = bMin;
 		this.bMax = bMax;
 	}
+	
+	public CubeDimensions(Histogram histogram) {
+		rMin = 256;
+    	rMax = 0;
+
+    	gMin = 256;
+    	gMax = 0;
+    	
+    	bMin = 256;
+    	bMax = 0;
+    	
+		
+    	for(Pixel p : histogram.getPixelList()) {
+    		if(p.getR() < rMin) {
+    			rMin = p.getR();
+    		}
+    		
+    		if(p.getR() > rMax) {
+    			rMax = p.getR();
+    		}
+    		
+    		if(p.getG() < gMin) {
+    			gMin = p.getG();
+    		}
+    		
+    		if(p.getG() > gMax) {
+    			gMax = p.getG();
+    		}
+    		
+    		if(p.getB() < bMin) {
+    			bMin = p.getB();
+    		}
+
+    		if(p.getB() > bMax) {
+    			bMax = p.getB();
+    		}    		
+    	}
+	}
 
 	public Pixel getCenter() {
 		return new Pixel((getrMin() + getrMax() - getrMin()) / 2, (getgMin() + getgMax() - getgMin()) / 2,

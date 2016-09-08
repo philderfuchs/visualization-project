@@ -6,16 +6,77 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import de.project.visualization.colorquantization.entities.Cluster;
+import de.project.visualization.colorquantization.entities.Cube;
 import de.project.visualization.colorquantization.entities.Histogram;
 
 
 public class MedianCut {
+	
+	private int k;
+	private ArrayList<Cube> cubes;
+	
+	public MedianCut(int k) {
+		this.k = k;
+		cubes = new ArrayList<Cube>();
+	}
+	
+//	private ArrayList<Cube> step(Histogram histoggram) {
 //
-//	int count;
+//	Cube initialCube = new Cube(histogram);
+//	initialCube.shrink();
+//	cubeList.add(initialCube);
 //
-//	public MedianCut(int count) {
-//		this.count = count;
-//	}
+//	do {
+//		Cube cube = this.getBiggestCube(cubeList);
+//		cubeList.remove(cube);
+//		Colors colorWithLongestDistance = cube.getLongestDistance();
+//
+//		sortHistogram(cube, colorWithLongestDistance);
+//
+//		int colorValueSum = this.getSumOfColorValues(cube,
+//				colorWithLongestDistance);
+//
+//		Histogram histogramOfChildCube1 = new Histogram();
+//		Histogram histogramOfChildCube2 = new Histogram();
+//
+//		int sum = 0;
+//		for (Pixel p : cube.getHistogram().getHistogram()) {
+//			sum += p.getCount();
+//			if (sum <= colorValueSum / 2) {
+//				histogramOfChildCube1.add(p);
+//			} else {
+//				histogramOfChildCube2.add(p);
+//			}
+//		}
+//
+//		Cube childCube1 = new Cube(histogramOfChildCube1);
+//		childCube1.shrink();
+//		Cube childCube2 = new Cube(histogramOfChildCube2);
+//		childCube2.shrink();
+//
+//		cubeList.add(childCube1);
+//		cubeList.add(childCube2);
+//	} while (cubeList.size() < countfOfCubes);
+//	return cubeList;
+//}
+
+	public int getK() {
+		return k;
+	}
+
+	public void setK(int k) {
+		this.k = k;
+	}
+
+	public ArrayList<Cube> getCubes() {
+		return cubes;
+	}
+
+	public void setCubes(ArrayList<Cube> cubes) {
+		this.cubes = cubes;
+	}
+	
 //
 //	public HashSet<Pixel> quantize(Histogram histogram) {
 //

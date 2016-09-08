@@ -73,7 +73,7 @@ public class KmeansVisualization {
 			appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
 			appearance.setPolygonAttributes(
 					new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
-			Sphere clusterCenter = new Sphere(0.05f, appearance);
+			Sphere clusterCenter = new Sphere(0.04f, appearance);
 			clusterCenter.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
 			transformGroup.addChild(clusterCenter);
 			vClusters.add(new VisualCluster(c, clusterCenter));
@@ -105,7 +105,7 @@ public class KmeansVisualization {
 			Coordinates coordinates = calculateCoordinates(c.getCenter().getR(), c.getCenter().getG(),
 					c.getCenter().getB());
 			
-			int count = 20;
+			int count = 30;
 			float stepX = (coordinates.getX() - coordList.get(i).getX()) / (float) count;
 			float stepY = (coordinates.getY() - coordList.get(i).getY()) / (float) count;
 			float stepZ = (coordinates.getZ() - coordList.get(i).getZ()) / (float) count;

@@ -13,6 +13,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextField;
 
 import java.awt.GraphicsConfiguration;
 
@@ -34,6 +35,7 @@ public class Canvas extends JPanel implements ActionListener {
 	private Histogram histo;
 	private SimpleUniverse universe;
 	private JPanel clusterColorsPanel;
+	private JTextField k;
 	
 	private static String filename = "kanye_small.jpg";
 
@@ -46,16 +48,20 @@ public class Canvas extends JPanel implements ActionListener {
 
 		
 		JPanel kmeansControlPanel = new JPanel();
+		k = new JTextField("5", 5);
 		JButton init = new JButton("init");
 		init.addActionListener(this);
 		JButton step = new JButton("step");
 		step.addActionListener(this);
 
+		kmeansControlPanel.add(k);
 		kmeansControlPanel.add(init);
 		kmeansControlPanel.add(step);
 		add("North", kmeansControlPanel);
 		
 		clusterColorsPanel = new JPanel();
+//		JButton all = new JButton("all");
+//		clusterColorsPanel.add(all);
 		add("South", clusterColorsPanel);
 
 		try {
@@ -74,7 +80,7 @@ public class Canvas extends JPanel implements ActionListener {
 			if (kmeansVisu != null) {
 				kmeansVisu.destroyVisualization();
 			}
-			kmeansVisu = new KmeansVisualization(5, universe);
+			kmeansVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
 			setUpLabels(kmeansVisu.initKmeans(histo));
 		}
 		if (e.getActionCommand().equals("step")) {

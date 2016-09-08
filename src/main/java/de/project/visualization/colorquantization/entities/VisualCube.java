@@ -7,7 +7,7 @@ public class VisualCube extends Cube {
 	private Primitive primitive;
 
 	public VisualCube(Cube cube, Primitive primitive) {
-		super(cube.getHistogram(), cube.getCubeDimensions());
+		super(cube.getHistogram());
 		this.primitive = primitive;
 	}
 

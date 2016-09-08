@@ -8,6 +8,11 @@ public class Cube extends Cluster {
 		super(histo, cubeDimensions.getCenter());
 		this.cubeDimensions = cubeDimensions;
 	}
+	
+	public Cube(Histogram histo) {
+		super(histo, new CubeDimensions(histo).getCenter());
+		this.cubeDimensions = new CubeDimensions(histo);
+	}
 
 	public CubeDimensions getCubeDimensions() {
 		return cubeDimensions;

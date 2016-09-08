@@ -30,7 +30,7 @@ import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Canvas extends JPanel implements ActionListener {
+public class MainWindow extends JPanel implements ActionListener {
 
 	private ClusteringAlgorithmVisualization kmeansVisu;
 	private Histogram histo;
@@ -42,7 +42,7 @@ public class Canvas extends JPanel implements ActionListener {
 
 	private static String filename = "kanye_small.jpg";
 
-	public Canvas() {
+	public MainWindow() {
 		setLayout(new BorderLayout());
 		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
 
@@ -125,7 +125,7 @@ public class Canvas extends JPanel implements ActionListener {
 	public static void main(String[] args) {
 
 		JFrame frame = new JFrame();
-		frame.add(new JScrollPane(new Canvas()));
+		frame.add(new JScrollPane(new MainWindow()));
 		frame.setSize(600, 600);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

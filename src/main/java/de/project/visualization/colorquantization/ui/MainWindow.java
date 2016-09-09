@@ -22,6 +22,7 @@ import java.awt.GraphicsConfiguration;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -33,6 +34,9 @@ import java.util.ArrayList;
 
 public class MainWindow extends JPanel implements ActionListener {
 
+	private static int windowWidth = 700;
+	private static int windowHeight = 700;
+	
 	private ClusteringAlgorithmVisualization algoVisu;
 	private Histogram histo;
 	private SimpleUniverse universe;
@@ -63,6 +67,7 @@ public class MainWindow extends JPanel implements ActionListener {
 		add("North", kmeansControlPanel);
 
 		clusterColorsPanel = new JPanel();
+		clusterColorsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
 		clusterColorsPanel.setBackground(new Color(0, 0, 0));
 		clusterColorsPanel.setPreferredSize(new Dimension(0, 100));
 		add("South", clusterColorsPanel);
@@ -115,13 +120,14 @@ public class MainWindow extends JPanel implements ActionListener {
 
 	private void setUpLabels(ArrayList<VisualCluster> clusters) {
 		clusterColorsPanel.removeAll();
-		JButton all = new JButton("all");
-		all.addActionListener(this);
-		clusterColorsPanel.add(all);
 		
+//		JButton all = new JButton("all");
+//		all.addActionListener(this);
+//		clusterColorsPanel.add(all);
+		int labelWidth = this.windowWidth / clusters.size();
 		clusterLabels = new ArrayList<ClusterLabel>();
 		for (VisualCluster c : clusters) {
-			ClusterLabel label = new ClusterLabel(c, algoVisu, !showClustersMode);
+			ClusterLabel label = new ClusterLabel(c, algoVisu, labelWidth, 100, !showClustersMode);
 			clusterLabels.add(label);
 			clusterColorsPanel.add(label);
 		}
@@ -130,11 +136,11 @@ public class MainWindow extends JPanel implements ActionListener {
 	}
 
 	public static void main(String[] args) {
-
 		JFrame frame = new JFrame();
 		frame.add(new MainWindow());
-		frame.setSize(600, 600);
+		frame.setSize(windowWidth, windowHeight);
 		frame.setVisible(true);
+		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 	}

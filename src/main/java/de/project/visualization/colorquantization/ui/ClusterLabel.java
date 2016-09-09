@@ -18,18 +18,18 @@ public class ClusterLabel extends JLabel {
 	private ClusteringAlgorithmVisualization visu;
 	private boolean active;
 
-	public ClusterLabel(VisualCluster c, ClusteringAlgorithmVisualization visu) {
+	public ClusterLabel(VisualCluster c, ClusteringAlgorithmVisualization visu, int width, int height) {
 		this.visu = visu;
 		this.c = c;
 		this.active = true;
 		setBackground(new Color(c.getCenter().getR(), c.getCenter().getG(), c.getCenter().getB()));
 		setOpaque(true);
-		setPreferredSize(new Dimension(100, 100));
+		setPreferredSize(new Dimension(width, height));
 		addMouseListener(new LabelAdapter());
 	}
 
-	public ClusterLabel(VisualCluster c, ClusteringAlgorithmVisualization visu, boolean active) {
-		this(c, visu);
+	public ClusterLabel(VisualCluster c, ClusteringAlgorithmVisualization visu, int width, int height, boolean active) {
+		this(c, visu, width, height);
 		this.active = active;
 	}
 

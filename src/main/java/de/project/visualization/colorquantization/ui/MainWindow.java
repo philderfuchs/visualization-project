@@ -81,7 +81,7 @@ public class MainWindow extends JPanel implements ActionListener {
 				algoVisu.destroyVisualization();
 			}
 //			algoVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
-			algoVisu = new MedianCutVisualization(Integer.parseInt(k.getText()), universe);
+			algoVisu = new MedianCutVisualization(universe);
 			setUpLabels(algoVisu.init(histo));
 		}
 		if (e.getActionCommand().equals("step")) {

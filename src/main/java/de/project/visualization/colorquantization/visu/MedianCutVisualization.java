@@ -30,31 +30,38 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 	private BranchGroup cubesGroup;
 	private BranchGroup activeValues;
 	private MedianCut medianCut;
-	private int k;
 	private static KmeansVisualization instance = null;
 	private ArrayList<VisualCluster> vClusters;
 
-	public MedianCutVisualization(int k, SimpleUniverse universe) {
+	public MedianCutVisualization(SimpleUniverse universe) {
 		this.activeValues = new BranchGroup();
 		activeValues.setCapability(BranchGroup.ALLOW_CHILDREN_EXTEND);
 		activeValues.setCapability(BranchGroup.ALLOW_CHILDREN_WRITE);
 		this.universe = universe;
 		this.universe.addBranchGraph(activeValues);
-		this.k = k;
 	}
 
 	public void destroyVisualization() {
-		// TODO Auto-generated method stub
-
+		if(cubesGroup != null) {
+			cubesGroup.detach();
+		}
+		this.hideAllClusters();
 	}
 
 	public ArrayList<VisualCluster> init(Histogram histo) {
+
+		vClusters = new ArrayList<VisualCluster>();
+		medianCut = new MedianCut();
+		
+		return this.step(histo);
+	}
+
+	public ArrayList<VisualCluster> step(Histogram histo) {
+		this.destroyVisualization();
 		cubesGroup = new BranchGroup();
 		cubesGroup.setCapability(BranchGroup.ALLOW_DETACH);
-
-		medianCut = new MedianCut(k);
-		ArrayList<Cube> cubes = medianCut.init(histo);
-		vClusters = new ArrayList<VisualCluster>();
+		
+		ArrayList<Cube> cubes = medianCut.step(histo);
 
 		for (Cube c : cubes) {
 			Transform3D transform3d = new Transform3D();
@@ -84,12 +91,8 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 			cubesGroup.addChild(transformGroup);
 		}
 		universe.addBranchGraph(cubesGroup);
-		return vClusters;
-	}
 
-	public ArrayList<VisualCluster> step(Histogram histo) {
-		// TODO Auto-generated method stub
-		return null;
+		return vClusters;
 	}
 
 	public void showCluster(VisualCluster c) {

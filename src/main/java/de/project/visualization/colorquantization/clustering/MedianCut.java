@@ -14,47 +14,46 @@ import de.project.visualization.colorquantization.entities.Pixel;
 
 public class MedianCut {
 
-	private int k;
 	private ArrayList<Cube> cubes;
 
-	public MedianCut(int k) {
-		this.k = k;
+	public MedianCut() {
 		cubes = new ArrayList<Cube>();
 	}
 
-	public ArrayList<Cube> init(Histogram histogram) {
-		Cube initialCube = new Cube(histogram);
-		cubes.add(initialCube);
-		return cubes;
-	}
+	public ArrayList<Cube> step(Histogram histogram) {
 
-	public ArrayList<Cube> step() {
+		if (cubes.size() == 0) {
+			Cube initialCube = new Cube(histogram);
+			cubes.add(initialCube);
+			return cubes;
+		} else {
 
-		Cube cube = this.getBiggestCube(cubes);
-		cubes.remove(cube);
+			Cube cube = this.getBiggestCube(cubes);
+			cubes.remove(cube);
 
-		sortHistogram(cube, cube.getLongestDistance());
+			sortHistogram(cube, cube.getLongestDistance());
 
-		int totalCount = cube.getHistogram().getCountOfPixels();
+			int totalCount = cube.getHistogram().getCountOfPixels();
 
-		Histogram histogramOfChildCube1 = new Histogram();
-		Histogram histogramOfChildCube2 = new Histogram();
+			Histogram histogramOfChildCube1 = new Histogram();
+			Histogram histogramOfChildCube2 = new Histogram();
 
-		int currentCount = 0;
-		for (Pixel p : cube.getHistogram().getPixelList()) {
-			currentCount += p.getCount();
-			if (currentCount <= totalCount / 2) {
-				histogramOfChildCube1.add(p);
-			} else {
-				histogramOfChildCube2.add(p);
+			int currentCount = 0;
+			for (Pixel p : cube.getHistogram().getPixelList()) {
+				currentCount += p.getCount();
+				if (currentCount <= totalCount / 2) {
+					histogramOfChildCube1.add(p);
+				} else {
+					histogramOfChildCube2.add(p);
+				}
 			}
+
+			Cube childCube1 = new Cube(histogramOfChildCube1);
+			Cube childCube2 = new Cube(histogramOfChildCube2);
+
+			cubes.add(childCube1);
+			cubes.add(childCube2);
 		}
-
-		Cube childCube1 = new Cube(histogramOfChildCube1);
-		Cube childCube2 = new Cube(histogramOfChildCube2);
-
-		cubes.add(childCube1);
-		cubes.add(childCube2);
 		return cubes;
 	}
 
@@ -77,14 +76,6 @@ public class MedianCut {
 	private Cube getBiggestCube(ArrayList<Cube> cubeList) {
 		Collections.sort(cubeList);
 		return cubeList.get(0);
-	}
-
-	public int getK() {
-		return k;
-	}
-
-	public void setK(int k) {
-		this.k = k;
 	}
 
 	public ArrayList<Cube> getCubes() {

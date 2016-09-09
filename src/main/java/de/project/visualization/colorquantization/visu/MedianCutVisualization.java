@@ -79,12 +79,28 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 			Box edgedBox = createCubeModel(c, false);
 			transformGroup.addChild(coloredBox);
 			transformGroup.addChild(edgedBox);
-			vClusters.add(new VisualCluster(c, coloredBox));
+			Sphere sphere = createSphereModel(0.03f);
+			transformGroup.addChild(sphere);
+			ArrayList<Primitive> primitives = new ArrayList<Primitive>();
+			primitives.add(edgedBox);
+			primitives.add(sphere);
+			vClusters.add(new VisualCluster(c, primitives));
 			cubesGroup.addChild(transformGroup);
 		}
 		universe.addBranchGraph(cubesGroup);
 
 		return vClusters;
+	}
+	
+	private Sphere createSphereModel(float size) {
+		Appearance appearance = new Appearance();
+		appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
+		appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
+		appearance.setPolygonAttributes(
+				new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0.0f));
+		Sphere clusterCenter = new Sphere(size, appearance);
+		clusterCenter.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
+		return clusterCenter;
 	}
 
 	private Box createCubeModel(Cube c, boolean colored) {

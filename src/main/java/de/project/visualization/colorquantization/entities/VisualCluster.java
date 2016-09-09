@@ -1,29 +1,31 @@
 package de.project.visualization.colorquantization.entities;
 
+import java.util.ArrayList;
+
 import javax.media.j3d.TransformGroup;
 
 import com.sun.j3d.utils.geometry.Primitive;
 
 public class VisualCluster extends Cluster {
 	
-	private Primitive primitive;
+	private ArrayList<Primitive> primitives;
 	
-	public VisualCluster(Histogram histo, Pixel center, Primitive primitive, Coordinates coordinates) {
+	public VisualCluster(Histogram histo, Pixel center, ArrayList<Primitive> primitives, Coordinates coordinates) {
 		super(histo, center);
-		this.primitive = primitive;
+		this.primitives = primitives;
 	}
 	
-	public VisualCluster(Cluster c, Primitive primitive) {
+	public VisualCluster(Cluster c, ArrayList<Primitive> primitives) {
 		super(c.getHistogram(), c.getCenter());
-		this.primitive = primitive;
+		this.primitives = primitives;
 	}
 
-	public Primitive getPrimitive() {
-		return primitive;
+	public ArrayList<Primitive> getPrimitives() {
+		return primitives;
 	}
 
-	public void setPrimitive(Primitive primitive) {
-		this.primitive = primitive;
+	public void setPrimitives(ArrayList<Primitive> primitives) {
+		this.primitives = primitives;
 	}
 
 }

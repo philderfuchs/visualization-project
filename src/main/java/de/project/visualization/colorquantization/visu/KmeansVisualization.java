@@ -73,19 +73,26 @@ public class KmeansVisualization implements ClusteringAlgorithmVisualization {
 			transform3d.setTranslation(new Vector3f(coordinates.getX(), coordinates.getY(), coordinates.getZ()));
 			TransformGroup transformGroup = new TransformGroup(transform3d);
 			transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-			Appearance appearance = new Appearance();
-			appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
-			appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
-			appearance.setPolygonAttributes(
-					new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
-			Sphere clusterCenter = new Sphere(0.04f, appearance);
-			clusterCenter.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
+			Sphere clusterCenter = createSphereModel(0.04f);
 			transformGroup.addChild(clusterCenter);
-			vClusters.add(new VisualCluster(c, clusterCenter));
+			ArrayList<Primitive> primitives = new ArrayList<Primitive>();
+			primitives.add(clusterCenter);
+			vClusters.add(new VisualCluster(c, primitives));
 			clusterCentersGroup.addChild(transformGroup);
 		}
 		universe.addBranchGraph(clusterCentersGroup);
 		return vClusters;
+	}
+
+	private Sphere createSphereModel(float size) {
+		Appearance appearance = new Appearance();
+		appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
+		appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
+		appearance.setPolygonAttributes(
+				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
+		Sphere clusterCenter = new Sphere(size, appearance);
+		clusterCenter.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
+		return clusterCenter;
 	}
 
 	public ArrayList<VisualCluster> step(Histogram histo) {
@@ -130,7 +137,9 @@ public class KmeansVisualization implements ClusteringAlgorithmVisualization {
 			// transform3d.setTranslation(new Vector3f(coordinates.getX(),
 			// coordinates.getY(), coordinates.getZ()));
 			// transformGroup.setTransform(transform3d);
-			vClusters.add(new VisualCluster(c, (Primitive) transformGroup.getChild(0)));
+			ArrayList<Primitive> primitives = new ArrayList<Primitive>();
+			primitives.add((Primitive) transformGroup.getChild(0));
+			vClusters.add(new VisualCluster(c, primitives));
 
 			i++;
 		}
@@ -168,7 +177,7 @@ public class KmeansVisualization implements ClusteringAlgorithmVisualization {
 		// c.getPrimitive().getAppearance().setPolygonAttributes(
 		// new PolygonAttributes(PolygonAttributes.POLYGON_FILL,
 		// PolygonAttributes.CULL_NONE, 0.0f));
-		c.getPrimitive().getAppearance()
+		c.getPrimitives().get(0).getAppearance()
 				.setColoringAttributes(new ColoringAttributes((float) c.getCenter().getR() / 255.0f,
 						(float) c.getCenter().getG() / 255.0f, (float) c.getCenter().getB() / 255.0f,
 						ColoringAttributes.SHADE_FLAT));
@@ -182,9 +191,9 @@ public class KmeansVisualization implements ClusteringAlgorithmVisualization {
 	 */
 	public void hideCluster(VisualCluster c) {
 		activeValues.removeAllChildren();
-		c.getPrimitive().getAppearance().setPolygonAttributes(
+		c.getPrimitives().get(0).getAppearance().setPolygonAttributes(
 				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
-		c.getPrimitive().getAppearance().setColoringAttributes(new ColoringAttributes());
+		c.getPrimitives().get(0).getAppearance().setColoringAttributes(new ColoringAttributes());
 	}
 	
 	public void showAllClusters() {

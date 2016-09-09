@@ -61,7 +61,6 @@ public class Histogram {
 		default:
 			break;
 		}
-
 	}
 	
 	public void add(Pixel p) {

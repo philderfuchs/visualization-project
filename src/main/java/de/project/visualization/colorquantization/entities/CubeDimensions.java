@@ -69,6 +69,26 @@ public class CubeDimensions {
 	public int getrMin() {
 		return rMin;
 	}
+	
+	public Channels getLongestDistance () {
+		if (this.getRdiff() >= this.getGdiff()) {
+			if (this.getRdiff() >= this.getBdiff()) {
+				return Channels.R;
+			} else {
+				return Channels.B;
+			}
+		} else {
+			if (this.getGdiff() >= this.getBdiff()) {
+				return Channels.G;
+			} else {
+				return Channels.B;
+			}
+		}
+	}
+	
+	public int getSize() {
+		return getRdiff() * getGdiff() * getBdiff(); 
+	}
 
 	public void setrMin(int rMin) {
 		this.rMin = rMin;

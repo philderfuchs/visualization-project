@@ -4,9 +4,11 @@ import java.util.ArrayList;
 
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
+import javax.media.j3d.ColoringAttributes;
 import javax.media.j3d.PolygonAttributes;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
+import javax.media.j3d.TransparencyAttributes;
 import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.geometry.Primitive;
@@ -65,12 +67,16 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 			appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
 			appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
 			appearance.setPolygonAttributes(
-					new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
+					new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0.0f));
+			appearance.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.4f));
+			appearance.setColoringAttributes(new ColoringAttributes((float) c.getCenter().getR() / 255.0f,
+					(float) c.getCenter().getG() / 255.0f, (float) c.getCenter().getB() / 255.0f,
+					ColoringAttributes.SHADE_FLAT));
 			// Sphere clusterCenter = new Sphere(0.04f, appearance);
 
-			Box box = new Box((float) c.getCubeDimensions().getRdiff() / (255.0f * 2.0f),
-					(float) c.getCubeDimensions().getGdiff() / (255.0f * 2.0f),
-					(float) c.getCubeDimensions().getBdiff() / (255.0f * 2.0f),
+			Box box = new Box((float) c.getRdiff() / (255.0f * 2.0f),
+					(float) c.getGdiff() / (255.0f * 2.0f),
+					(float) c.getBdiff() / (255.0f * 2.0f),
 					appearance);
 			box.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
 			transformGroup.addChild(box);

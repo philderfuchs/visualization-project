@@ -7,6 +7,7 @@ import de.project.visualization.colorquantization.read.ImageReader;
 import de.project.visualization.colorquantization.visu.ClusteringAlgorithmVisualization;
 import de.project.visualization.colorquantization.visu.HistogramVisualization;
 import de.project.visualization.colorquantization.visu.KmeansVisualization;
+import de.project.visualization.colorquantization.visu.MedianCutVisualization;
 
 import javax.media.j3d.Canvas3D;
 import javax.swing.JButton;
@@ -32,7 +33,7 @@ import java.util.ArrayList;
 
 public class MainWindow extends JPanel implements ActionListener {
 
-	private ClusteringAlgorithmVisualization kmeansVisu;
+	private ClusteringAlgorithmVisualization algoVisu;
 	private Histogram histo;
 	private SimpleUniverse universe;
 	private JPanel clusterColorsPanel;
@@ -76,28 +77,29 @@ public class MainWindow extends JPanel implements ActionListener {
 
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("init")) {
-			if (kmeansVisu != null) {
-				kmeansVisu.destroyVisualization();
+			if (algoVisu != null) {
+				algoVisu.destroyVisualization();
 			}
-			kmeansVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
-			setUpLabels(kmeansVisu.init(histo));
+//			algoVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
+			algoVisu = new MedianCutVisualization(Integer.parseInt(k.getText()), universe);
+			setUpLabels(algoVisu.init(histo));
 		}
 		if (e.getActionCommand().equals("step")) {
-			kmeansVisu.hideAllClusters();
-			setUpLabels(kmeansVisu.step(histo));
+			algoVisu.hideAllClusters();
+			setUpLabels(algoVisu.step(histo));
 			if (showClustersMode) {
-				kmeansVisu.showAllClusters();
+				algoVisu.showAllClusters();
 			}
 		}
 		if (e.getActionCommand().equals("all")) {
 			showClustersMode = !showClustersMode;
 			if (showClustersMode) {
-				kmeansVisu.showAllClusters();
+				algoVisu.showAllClusters();
 				for(ClusterLabel l : clusterLabels) {
 					l.setActive(false);
 				}
 			} else {
-				kmeansVisu.hideAllClusters();
+				algoVisu.hideAllClusters();
 				for(ClusterLabel l : clusterLabels) {
 					l.setActive(true);
 				}
@@ -114,7 +116,7 @@ public class MainWindow extends JPanel implements ActionListener {
 		
 		clusterLabels = new ArrayList<ClusterLabel>();
 		for (VisualCluster c : clusters) {
-			ClusterLabel label = new ClusterLabel(c, kmeansVisu, !showClustersMode);
+			ClusterLabel label = new ClusterLabel(c, algoVisu, !showClustersMode);
 			clusterLabels.add(label);
 			clusterColorsPanel.add(label);
 		}

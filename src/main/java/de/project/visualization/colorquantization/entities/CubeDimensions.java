@@ -11,16 +11,7 @@ public class CubeDimensions {
 	private int bMin;
 	private int bMax;
 
-	public CubeDimensions(int rMin, int rMax, int gMin, int gMax, int bMin, int bMax) {
-		super();
-		this.rMin = rMin;
-		this.rMax = rMax;
-		this.gMin = gMin;
-		this.gMax = gMax;
-		this.bMin = bMin;
-		this.bMax = bMax;
-	}
-
+	// constructor automatically shrinks cube to minimal size
 	public CubeDimensions(Histogram histogram) {
 		rMin = 256;
 		rMax = 0;
@@ -62,7 +53,19 @@ public class CubeDimensions {
 		return new Pixel(getrMin() + (getrMax() - getrMin()) / 2, getgMin() + (getgMax() - getgMin()) / 2,
 				getbMin() + (getbMax() - getbMin()) / 2, 1);
 	}
+	
+	public int getRdiff(){
+		return rMax-rMin;
+	}
+	
+	public int getGdiff(){
+		return gMax-gMin;
+	}
 
+	public int getBdiff(){
+		return bMax-bMin;
+	}
+	
 	public int getrMin() {
 		return rMin;
 	}

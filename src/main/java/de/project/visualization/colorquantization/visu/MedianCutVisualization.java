@@ -91,13 +91,13 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 
 		return vClusters;
 	}
-	
+
 	private Sphere createSphereModel(float size) {
 		Appearance appearance = new Appearance();
 		appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
 		appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
 		appearance.setPolygonAttributes(
-				new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0.0f));
+				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
 		Sphere clusterCenter = new Sphere(size, appearance);
 		clusterCenter.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
 		return clusterCenter;
@@ -107,17 +107,19 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 		Appearance appearance = new Appearance();
 		appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
 		appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
+		appearance.setCapability(Appearance.ALLOW_TRANSPARENCY_ATTRIBUTES_WRITE);
 		if (colored) {
 			appearance.setPolygonAttributes(
 					new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0.0f));
-			appearance.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.8f));
+			appearance.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.7f));
 			appearance.setColoringAttributes(
 					new ColoringAttributes((float) c.getCenter().getR() / 255.0f, (float) c.getCenter().getG() / 255.0f,
 							(float) c.getCenter().getB() / 255.0f, ColoringAttributes.SHADE_FLAT));
 		} else {
 			appearance.setPolygonAttributes(
-					new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
-			appearance.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.6f));
+					new PolygonAttributes(PolygonAttributes.POLYGON_POINT, PolygonAttributes.CULL_NONE, 0.0f));
+			// appearance.setTransparencyAttributes(new
+			// TransparencyAttributes(TransparencyAttributes.NICEST, 0.6f));
 		}
 
 		// Sphere clusterCenter = new Sphere(0.04f, appearance);
@@ -155,25 +157,42 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 			values.addChild(shape);
 		}
 
+		c.getPrimitives().get(0).getAppearance()
+				.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.6f));
+		c.getPrimitives().get(0).getAppearance().setPolygonAttributes(
+				new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
+
+		c.getPrimitives().get(1).getAppearance()
+				.setColoringAttributes(new ColoringAttributes((float) c.getCenter().getR() / 255.0f,
+						(float) c.getCenter().getG() / 255.0f, (float) c.getCenter().getB() / 255.0f,
+						ColoringAttributes.SHADE_FLAT));
+
 		activeValues.addChild(values);
 	}
 
 	public void hideCluster(VisualCluster c) {
 		activeValues.removeAllChildren();
+
+		c.getPrimitives().get(0).getAppearance()
+				.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.0f));
+		c.getPrimitives().get(0).getAppearance().setPolygonAttributes(
+				new PolygonAttributes(PolygonAttributes.POLYGON_POINT, PolygonAttributes.CULL_NONE, 0.0f));
+		c.getPrimitives().get(1).getAppearance().setColoringAttributes(new ColoringAttributes());
+
 	}
 
 	public void showAllClusters() {
-		for(VisualCluster c : vClusters){
+		for (VisualCluster c : vClusters) {
 			this.showCluster(c);
 		}
 	}
-	
+
 	public void hideAllClusters() {
-		for(VisualCluster c : vClusters){
+		for (VisualCluster c : vClusters) {
 			this.hideCluster(c);
 		}
 	}
-	
+
 	public ArrayList<VisualCluster> getVisualClusters() {
 		// TODO Auto-generated method stub
 		return null;

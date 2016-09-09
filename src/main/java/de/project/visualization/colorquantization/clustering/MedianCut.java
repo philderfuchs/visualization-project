@@ -33,15 +33,14 @@ public class MedianCut {
 
 			sortHistogram(cube, cube.getLongestDistance());
 
-			int totalCount = cube.getHistogram().getCountOfPixels();
-
+			float totalCount = cube.getHistogram().getCountOfPixels();
 			Histogram histogramOfChildCube1 = new Histogram();
 			Histogram histogramOfChildCube2 = new Histogram();
 
-			int currentCount = 0;
+			float currentCount = 0;
 			for (Pixel p : cube.getHistogram().getPixelList()) {
 				currentCount += p.getCount();
-				if (currentCount <= totalCount / 2) {
+				if (currentCount <= (totalCount / 2.0f) || histogramOfChildCube1.getLength() == 0) {
 					histogramOfChildCube1.add(p);
 				} else {
 					histogramOfChildCube2.add(p);

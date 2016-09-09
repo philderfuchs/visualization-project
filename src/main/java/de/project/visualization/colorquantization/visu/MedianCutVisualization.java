@@ -5,10 +5,15 @@ import java.util.ArrayList;
 import javax.media.j3d.Appearance;
 import javax.media.j3d.BranchGroup;
 import javax.media.j3d.ColoringAttributes;
+import javax.media.j3d.GeometryArray;
+import javax.media.j3d.PointArray;
+import javax.media.j3d.PointAttributes;
 import javax.media.j3d.PolygonAttributes;
+import javax.media.j3d.Shape3D;
 import javax.media.j3d.Transform3D;
 import javax.media.j3d.TransformGroup;
 import javax.media.j3d.TransparencyAttributes;
+import javax.vecmath.Point3f;
 import javax.vecmath.Vector3f;
 
 import com.sun.j3d.utils.geometry.Primitive;
@@ -22,6 +27,7 @@ import de.project.visualization.colorquantization.entities.Cluster;
 import de.project.visualization.colorquantization.entities.Coordinates;
 import de.project.visualization.colorquantization.entities.Cube;
 import de.project.visualization.colorquantization.entities.Histogram;
+import de.project.visualization.colorquantization.entities.Pixel;
 import de.project.visualization.colorquantization.entities.VisualCluster;
 
 public class MedianCutVisualization implements ClusteringAlgorithmVisualization {
@@ -44,8 +50,8 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 	public void destroyVisualization() {
 		if (cubesGroup != null) {
 			cubesGroup.detach();
+			this.hideAllClusters();
 		}
-		this.hideAllClusters();
 	}
 
 	public ArrayList<VisualCluster> init(Histogram histo) {
@@ -88,7 +94,7 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 		if (colored) {
 			appearance.setPolygonAttributes(
 					new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0.0f));
-			appearance.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.7f));
+			appearance.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.8f));
 			appearance.setColoringAttributes(
 					new ColoringAttributes((float) c.getCenter().getR() / 255.0f, (float) c.getCenter().getG() / 255.0f,
 							(float) c.getCenter().getB() / 255.0f, ColoringAttributes.SHADE_FLAT));
@@ -107,25 +113,51 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 	}
 
 	public void showCluster(VisualCluster c) {
-		// TODO Auto-generated method stub
+		BranchGroup values = new BranchGroup();
+		values.setCapability(BranchGroup.ALLOW_DETACH);
+		if (c.getHistogram().getLength() > 0) {
 
+			PointArray pointArray = new PointArray(c.getHistogram().getLength(), GeometryArray.COORDINATES);
+			Point3f[] pointCoordinates = new Point3f[c.getHistogram().getLength()];
+
+			int i = 0;
+			for (Pixel p : c.getHistogram().getPixelList()) {
+				pointCoordinates[i++] = new Point3f(((float) p.getR() / 255.0f) - 0.5f,
+						((float) p.getG() / 255.0f) - 0.5f, ((float) p.getB() / 255.0f) - 0.5f);
+			}
+			pointArray.setCoordinates(0, pointCoordinates);
+
+			PointAttributes pointAttributes = new PointAttributes();
+			pointAttributes.setPointAntialiasingEnable(true);
+
+			Appearance valuesAppearance = new Appearance();
+			valuesAppearance.setColoringAttributes(
+					new ColoringAttributes((float) c.getCenter().getR() / 255.0f, (float) c.getCenter().getG() / 255.0f,
+							(float) c.getCenter().getB() / 255.0f, ColoringAttributes.SHADE_FLAT));
+			valuesAppearance.setPointAttributes(pointAttributes);
+			Shape3D shape = new Shape3D(pointArray, valuesAppearance);
+			values.addChild(shape);
+		}
+
+		activeValues.addChild(values);
 	}
 
 	public void hideCluster(VisualCluster c) {
-		// TODO Auto-generated method stub
-
+		activeValues.removeAllChildren();
 	}
 
 	public void showAllClusters() {
-		// TODO Auto-generated method stub
-
+		for(VisualCluster c : vClusters){
+			this.showCluster(c);
+		}
 	}
-
+	
 	public void hideAllClusters() {
-		// TODO Auto-generated method stub
-
+		for(VisualCluster c : vClusters){
+			this.hideCluster(c);
+		}
 	}
-
+	
 	public ArrayList<VisualCluster> getVisualClusters() {
 		// TODO Auto-generated method stub
 		return null;

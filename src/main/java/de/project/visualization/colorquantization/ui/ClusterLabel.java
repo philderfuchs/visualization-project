@@ -39,6 +39,9 @@ public class ClusterLabel extends JLabel {
 			if (active) {
 				visu.hideAllClusters();
 				visu.showCluster(c);
+				System.out.println("Count: " + c.getHistogram().getCountOfPixels());
+				System.out.println("Length : " + c.getHistogram().getLength());
+
 			}
 		}
 

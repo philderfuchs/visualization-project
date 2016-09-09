@@ -41,7 +41,7 @@ public class MainWindow extends JPanel implements ActionListener {
 	private boolean showClustersMode = false;
 	private ArrayList<ClusterLabel> clusterLabels;
 
-	private static String filename = "djmel.jpg";
+	private static String filename = "kanye_small.jpg";
 
 	public MainWindow() {
 		setLayout(new BorderLayout());
@@ -83,6 +83,9 @@ public class MainWindow extends JPanel implements ActionListener {
 //			algoVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
 			algoVisu = new MedianCutVisualization(universe);
 			setUpLabels(algoVisu.init(histo));
+			if (showClustersMode) { 
+				algoVisu.showAllClusters();
+			}
 		}
 		if (e.getActionCommand().equals("step")) {
 			algoVisu.hideAllClusters();

@@ -42,17 +42,15 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 	}
 
 	public void destroyVisualization() {
-		if(cubesGroup != null) {
+		if (cubesGroup != null) {
 			cubesGroup.detach();
 		}
 		this.hideAllClusters();
 	}
 
 	public ArrayList<VisualCluster> init(Histogram histo) {
-
-		vClusters = new ArrayList<VisualCluster>();
 		medianCut = new MedianCut();
-		
+
 		return this.step(histo);
 	}
 
@@ -60,7 +58,8 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 		this.destroyVisualization();
 		cubesGroup = new BranchGroup();
 		cubesGroup.setCapability(BranchGroup.ALLOW_DETACH);
-		
+
+		vClusters = new ArrayList<VisualCluster>();
 		ArrayList<Cube> cubes = medianCut.step(histo);
 
 		for (Cube c : cubes) {
@@ -70,29 +69,41 @@ public class MedianCutVisualization implements ClusteringAlgorithmVisualization 
 			transform3d.setTranslation(new Vector3f(coordinates.getX(), coordinates.getY(), coordinates.getZ()));
 			TransformGroup transformGroup = new TransformGroup(transform3d);
 			transformGroup.setCapability(TransformGroup.ALLOW_TRANSFORM_WRITE);
-			Appearance appearance = new Appearance();
-			appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
-			appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
-			appearance.setPolygonAttributes(
-					new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0.0f));
-			appearance.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.4f));
-			appearance.setColoringAttributes(new ColoringAttributes((float) c.getCenter().getR() / 255.0f,
-					(float) c.getCenter().getG() / 255.0f, (float) c.getCenter().getB() / 255.0f,
-					ColoringAttributes.SHADE_FLAT));
-			// Sphere clusterCenter = new Sphere(0.04f, appearance);
-
-			Box box = new Box((float) c.getRdiff() / (255.0f * 2.0f),
-					(float) c.getGdiff() / (255.0f * 2.0f),
-					(float) c.getBdiff() / (255.0f * 2.0f),
-					appearance);
-			box.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
-			transformGroup.addChild(box);
-			vClusters.add(new VisualCluster(c, box));
+			Box coloredBox = createCubeModel(c, true);
+			Box edgedBox = createCubeModel(c, false);
+			transformGroup.addChild(coloredBox);
+			transformGroup.addChild(edgedBox);
+			vClusters.add(new VisualCluster(c, coloredBox));
 			cubesGroup.addChild(transformGroup);
 		}
 		universe.addBranchGraph(cubesGroup);
 
 		return vClusters;
+	}
+
+	private Box createCubeModel(Cube c, boolean colored) {
+		Appearance appearance = new Appearance();
+		appearance.setCapability(Appearance.ALLOW_POLYGON_ATTRIBUTES_WRITE);
+		appearance.setCapability(Appearance.ALLOW_COLORING_ATTRIBUTES_WRITE);
+		if (colored) {
+			appearance.setPolygonAttributes(
+					new PolygonAttributes(PolygonAttributes.POLYGON_FILL, PolygonAttributes.CULL_NONE, 0.0f));
+			appearance.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.7f));
+			appearance.setColoringAttributes(
+					new ColoringAttributes((float) c.getCenter().getR() / 255.0f, (float) c.getCenter().getG() / 255.0f,
+							(float) c.getCenter().getB() / 255.0f, ColoringAttributes.SHADE_FLAT));
+		} else {
+			appearance.setPolygonAttributes(
+					new PolygonAttributes(PolygonAttributes.POLYGON_LINE, PolygonAttributes.CULL_NONE, 0.0f));
+			appearance.setTransparencyAttributes(new TransparencyAttributes(TransparencyAttributes.NICEST, 0.6f));
+		}
+
+		// Sphere clusterCenter = new Sphere(0.04f, appearance);
+
+		Box box = new Box((float) c.getRdiff() / (255.0f * 2.0f), (float) c.getGdiff() / (255.0f * 2.0f),
+				(float) c.getBdiff() / (255.0f * 2.0f), appearance);
+		box.setCapability(Primitive.ENABLE_APPEARANCE_MODIFY);
+		return box;
 	}
 
 	public void showCluster(VisualCluster c) {

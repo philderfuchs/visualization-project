@@ -41,7 +41,7 @@ public class MainWindow extends JPanel implements ActionListener {
 	private boolean showClustersMode = false;
 	private ArrayList<ClusterLabel> clusterLabels;
 
-	private static String filename = "djmel.jpg";
+	private static String filename = "macmiller.png";
 
 	public MainWindow() {
 		setLayout(new BorderLayout());
@@ -63,6 +63,8 @@ public class MainWindow extends JPanel implements ActionListener {
 		add("North", kmeansControlPanel);
 
 		clusterColorsPanel = new JPanel();
+		clusterColorsPanel.setBackground(new Color(0, 0, 0));
+		clusterColorsPanel.setPreferredSize(new Dimension(0, 100));
 		add("South", clusterColorsPanel);
 
 		try {
@@ -130,7 +132,7 @@ public class MainWindow extends JPanel implements ActionListener {
 	public static void main(String[] args) {
 
 		JFrame frame = new JFrame();
-		frame.add(new JScrollPane(new MainWindow()));
+		frame.add(new MainWindow());
 		frame.setSize(600, 600);
 		frame.setVisible(true);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

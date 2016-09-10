@@ -68,11 +68,11 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 	public MainWindow() {
 		setLayout(new BorderLayout());
 
-		// JPanel controlPanel = new JPanel();
-		// controlPanel.setBackground(Color.BLACK);
-		JPanel kmeansPanel = new JPanel();
+		JPanel centerPanel = new JPanel(new BorderLayout());
+		centerPanel.setBackground(controlPanelColor);
+		JPanel kmeansPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
 		kmeansPanel.setBackground(controlPanelColor);
-		JPanel medianCutPanel = new JPanel();
+		JPanel medianCutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
 		medianCutPanel.setBackground(controlPanelColor);
 
 		k = new JTextField("5", 5);
@@ -95,26 +95,28 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		cardsPanel.add(KMEANS, kmeansPanel);
 		cardsPanel.add(MEDIANCUT, medianCutPanel);
 
-		JPanel comboBoxPane = new JPanel();
-		JButton open = new JButton("Open Image");
-		open.addActionListener(this);
-		comboBoxPane.add(open);
-
+		JPanel comboBoxPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
 		comboBoxPane.setBackground(controlPanelColor);
 		String comboBoxItems[] = { KMEANS, MEDIANCUT };
 		JComboBox<String> cb = new JComboBox<String>(comboBoxItems);
 		cb.setEditable(false);
 		cb.addItemListener(this);
 		comboBoxPane.add(cb);
+		
+		centerPanel.add(comboBoxPane, BorderLayout.NORTH);
+		centerPanel.add(cardsPanel, BorderLayout.SOUTH);
+
 
 		JPanel controlPanel = new JPanel(new BorderLayout());
 		controlPanel.setBackground(controlPanelColor);
+		JButton open = new JButton("Open New Image");
+		open.addActionListener(this);
 		JButton showAll = new JButton("show all clusters");
 		showAll.setForeground(Color.GRAY);
 		showAll.addActionListener(this);
 
-		controlPanel.add(comboBoxPane, BorderLayout.LINE_START);
-		controlPanel.add(cardsPanel, BorderLayout.CENTER);
+		controlPanel.add(open, BorderLayout.LINE_START);
+		controlPanel.add(centerPanel, BorderLayout.CENTER);
 		controlPanel.add(showAll, BorderLayout.LINE_END);
 		add("North", controlPanel);
 
@@ -123,7 +125,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		clusterColorsPanel.setBackground(new Color(0, 0, 0));
 		clusterColorsPanel.setPreferredSize(new Dimension(0, 100));
 		add("South", clusterColorsPanel);
-		
+
 		openImageAndSetUpCanvas();
 
 	}
@@ -142,7 +144,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 
 	public void actionPerformed(ActionEvent e) {
 
-		if (e.getActionCommand().equals("Open Image")) {
+		if (e.getActionCommand().equals("Open New Image")) {
 			openImageAndSetUpCanvas();
 		}
 

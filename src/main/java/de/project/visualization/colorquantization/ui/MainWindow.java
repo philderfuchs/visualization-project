@@ -2,6 +2,7 @@ package de.project.visualization.colorquantization.ui;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
 
+import de.project.visualization.colorquantization.clustering.ClusteringAlgorithm;
 import de.project.visualization.colorquantization.entities.*;
 import de.project.visualization.colorquantization.read.ImageReader;
 import de.project.visualization.colorquantization.visu.ClusteringAlgorithmVisualization;
@@ -43,6 +44,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 	private static int windowHeight = 700;
 	private final static String KMEANS = "K-Means";
 	private final static String MEDIANCUT = "Median Cut";
+	private ClusteringAlgorithm activeAlgorithm = ClusteringAlgorithm.KMEANS;
 
 	// UI Elements
 	// Where instance variables are declared:
@@ -71,7 +73,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		JPanel medianCutPanel = new JPanel();
 
 		k = new JTextField("5", 5);
-		JButton initKeans = new JButton("init");
+		JButton initKeans = new JButton("restart");
 		initKeans.addActionListener(this);
 		JButton stepKmeans = new JButton("step");
 		stepKmeans.addActionListener(this);
@@ -79,7 +81,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		kmeansPanel.add(initKeans);
 		kmeansPanel.add(stepKmeans);
 
-		JButton meandCutInit = new JButton("init");
+		JButton meandCutInit = new JButton("restart");
 		meandCutInit.addActionListener(this);
 		JButton medianCutStep = new JButton("step");
 		medianCutStep.addActionListener(this);
@@ -116,24 +118,25 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		}
 		HistogramVisualization visu = new HistogramVisualization(histo);
 		universe = visu.visualizeHistogram(canvas);
+		
+		this.initClusteringVisualisation();
 	}
 
 	public void itemStateChanged(ItemEvent evt) {
 		CardLayout cl = (CardLayout) (cardsPanel.getLayout());
-		cl.show(cardsPanel, (String) evt.getItem());
+		String item = (String) evt.getItem();
+		cl.show(cardsPanel, item);
+		if (item.equals(KMEANS)) {
+			activeAlgorithm = ClusteringAlgorithm.KMEANS;
+		} else if (item.equals(MEDIANCUT)) {
+			activeAlgorithm = ClusteringAlgorithm.MEDIANCUT;
+		}
+		initClusteringVisualisation();
 	}
 
 	public void actionPerformed(ActionEvent e) {
-		if (e.getActionCommand().equals("init")) {
-			if (algoVisu != null) {
-				algoVisu.destroyVisualization();
-			}
-			algoVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
-			// algoVisu = new MedianCutVisualization(universe);
-			setUpLabels(algoVisu.init(histo));
-			if (showClustersMode) {
-				algoVisu.showAllClusters();
-			}
+		if (e.getActionCommand().equals("restart")) {
+			initClusteringVisualisation();
 		}
 		if (e.getActionCommand().equals("step")) {
 			algoVisu.hideAllClusters();
@@ -157,6 +160,21 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 			}
 		}
 
+	}
+
+	private void initClusteringVisualisation() {
+		if (algoVisu != null) {
+			algoVisu.destroyVisualization();
+		}
+		if (activeAlgorithm == ClusteringAlgorithm.KMEANS) {
+			algoVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
+		} else if (activeAlgorithm == ClusteringAlgorithm.MEDIANCUT) {
+			 algoVisu = new MedianCutVisualization(universe);
+		}
+		setUpLabels(algoVisu.init(histo));
+		if (showClustersMode) {
+			algoVisu.showAllClusters();
+		}
 	}
 
 	private void setUpLabels(ArrayList<VisualCluster> clusters) {

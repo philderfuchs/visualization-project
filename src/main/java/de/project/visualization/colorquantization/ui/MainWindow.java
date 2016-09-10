@@ -106,6 +106,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		JPanel controlPanel = new JPanel(new BorderLayout());
 		controlPanel.setBackground(controlPanelColor);
 		JButton showAll = new JButton("show all clusters");
+		showAll.setForeground(Color.GRAY);
 		showAll.addActionListener(this);
 		controlPanel.add(comboBoxPane, BorderLayout.LINE_START);
 		controlPanel.add(cardsPanel, BorderLayout.CENTER);
@@ -155,12 +156,17 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		}
 		if (e.getActionCommand().equals("show all clusters")) {
 			showClustersMode = !showClustersMode;
+
 			if (showClustersMode) {
+				JButton button = (JButton) e.getSource();
+				button.setForeground(Color.RED);
 				algoVisu.showAllClusters();
 				for (ClusterLabel l : clusterLabels) {
 					l.setActive(false);
 				}
 			} else {
+				JButton button = (JButton) e.getSource();
+				button.setForeground(Color.GRAY);
 				algoVisu.hideAllClusters();
 				for (ClusterLabel l : clusterLabels) {
 					l.setActive(true);

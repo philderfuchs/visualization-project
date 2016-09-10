@@ -42,8 +42,8 @@ import java.util.ArrayList;
 public class MainWindow extends JPanel implements ActionListener, ItemListener {
 
 	// general settings
-	private static int windowWidth = 700;
-	private static int windowHeight = 700;
+	private static int windowWidth = 900;
+	private static int windowHeight = 750;
 	private final static String KMEANS = "K-Means";
 	private final static String MEDIANCUT = "Median Cut";
 	private final static Color controlPanelColor = Color.BLACK;
@@ -70,9 +70,9 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 
 		JPanel centerPanel = new JPanel(new BorderLayout());
 		centerPanel.setBackground(controlPanelColor);
-		JPanel kmeansPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+		JPanel kmeansPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		kmeansPanel.setBackground(controlPanelColor);
-		JPanel medianCutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+		JPanel medianCutPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
 		medianCutPanel.setBackground(controlPanelColor);
 
 		k = new JTextField("5", 5);
@@ -95,7 +95,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		cardsPanel.add(KMEANS, kmeansPanel);
 		cardsPanel.add(MEDIANCUT, medianCutPanel);
 
-		JPanel comboBoxPane = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
+		JPanel comboBoxPane = new JPanel();
 		comboBoxPane.setBackground(controlPanelColor);
 		String comboBoxItems[] = { KMEANS, MEDIANCUT };
 		JComboBox<String> cb = new JComboBox<String>(comboBoxItems);
@@ -103,22 +103,21 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		cb.addItemListener(this);
 		comboBoxPane.add(cb);
 		
-		centerPanel.add(comboBoxPane, BorderLayout.NORTH);
-		centerPanel.add(cardsPanel, BorderLayout.SOUTH);
-
+		centerPanel.add(comboBoxPane, BorderLayout.CENTER);
+		centerPanel.add(cardsPanel, BorderLayout.LINE_END);
 
 		JPanel controlPanel = new JPanel(new BorderLayout());
 		controlPanel.setBackground(controlPanelColor);
 		JButton openButton = new JButton("Open New Image");
 		openButton.addActionListener(this);
-		JPanel openPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
-		openPanel.setBackground(controlPanelColor);
-		openPanel.add(openButton);
+//		JPanel openPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+//		openPanel.setBackground(controlPanelColor);
+//		openPanel.add(openButton);
 		JButton showAll = new JButton("show all clusters");
 		showAll.setForeground(Color.GRAY);
 		showAll.addActionListener(this);
 
-		controlPanel.add(openPanel, BorderLayout.LINE_START);
+		controlPanel.add(openButton, BorderLayout.LINE_START);
 		controlPanel.add(centerPanel, BorderLayout.CENTER);
 		controlPanel.add(showAll, BorderLayout.LINE_END);
 		add("North", controlPanel);

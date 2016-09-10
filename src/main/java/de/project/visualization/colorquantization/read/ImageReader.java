@@ -16,8 +16,8 @@ public class ImageReader {
 
 	private BufferedImage img;
 
-	public ImageReader(String fileName) throws IOException {
-		img = ImageIO.read(new File(fileName));
+	public ImageReader(File file) throws IOException {
+		img = ImageIO.read(file);
 	}
 	
 //	public Color[] getPixelData() {

@@ -1,6 +1,7 @@
 package de.project.visualization.colorquantization.ui;
 
 import com.sun.j3d.utils.universe.SimpleUniverse;
+import java.io.File;
 
 import de.project.visualization.colorquantization.clustering.ClusteringAlgorithm;
 import de.project.visualization.colorquantization.entities.*;
@@ -13,6 +14,7 @@ import de.project.visualization.colorquantization.visu.MedianCutVisualization;
 import javax.media.j3d.Canvas3D;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -53,6 +55,8 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 	private JPanel clusterColorsPanel;
 	private JTextField k;
 	private ArrayList<ClusterLabel> clusterLabels;
+	private final JFileChooser fc = new JFileChooser();
+	private Canvas3D canvas = null;
 
 	private ClusteringAlgorithmVisualization algoVisu;
 	private Histogram histo;
@@ -63,10 +67,6 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 
 	public MainWindow() {
 		setLayout(new BorderLayout());
-		GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
-
-		Canvas3D canvas = new Canvas3D(config);
-		add("Center", canvas);
 
 		// JPanel controlPanel = new JPanel();
 		// controlPanel.setBackground(Color.BLACK);
@@ -96,6 +96,10 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		cardsPanel.add(MEDIANCUT, medianCutPanel);
 
 		JPanel comboBoxPane = new JPanel();
+		JButton open = new JButton("Open Image");
+		open.addActionListener(this);
+		comboBoxPane.add(open);
+
 		comboBoxPane.setBackground(controlPanelColor);
 		String comboBoxItems[] = { KMEANS, MEDIANCUT };
 		JComboBox<String> cb = new JComboBox<String>(comboBoxItems);
@@ -108,6 +112,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		JButton showAll = new JButton("show all clusters");
 		showAll.setForeground(Color.GRAY);
 		showAll.addActionListener(this);
+
 		controlPanel.add(comboBoxPane, BorderLayout.LINE_START);
 		controlPanel.add(cardsPanel, BorderLayout.CENTER);
 		controlPanel.add(showAll, BorderLayout.LINE_END);
@@ -118,17 +123,9 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		clusterColorsPanel.setBackground(new Color(0, 0, 0));
 		clusterColorsPanel.setPreferredSize(new Dimension(0, 100));
 		add("South", clusterColorsPanel);
+		
+		openImageAndSetUpCanvas();
 
-		try {
-			histo = new ImageReader("resources/" + filename).getHistogram();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		HistogramVisualization visu = new HistogramVisualization(histo);
-		universe = visu.visualizeHistogram(canvas);
-
-		this.initClusteringVisualisation();
 	}
 
 	public void itemStateChanged(ItemEvent evt) {
@@ -144,6 +141,11 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 	}
 
 	public void actionPerformed(ActionEvent e) {
+
+		if (e.getActionCommand().equals("Open Image")) {
+			openImageAndSetUpCanvas();
+		}
+
 		if (e.getActionCommand().equals("restart")) {
 			initClusteringVisualisation();
 		}
@@ -176,6 +178,35 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 
 	}
 
+	private void openImageAndSetUpCanvas() {
+		int returnVal = fc.showOpenDialog(this);
+
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			File file = fc.getSelectedFile();
+			// This is where a real application would open the file.
+			System.out.println("Opening: " + file.getName());
+			try {
+				histo = new ImageReader(file).getHistogram();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
+			if (canvas != null) {
+				remove(canvas);
+			}
+
+			GraphicsConfiguration config = SimpleUniverse.getPreferredConfiguration();
+			canvas = new Canvas3D(config);
+			add("Center", canvas);
+
+			HistogramVisualization visu = new HistogramVisualization(histo);
+			universe = visu.visualizeHistogram(canvas);
+			this.initClusteringVisualisation();
+		} else {
+			System.out.println("Open command cancelled by user.");
+		}
+	}
+
 	private void initClusteringVisualisation() {
 		if (algoVisu != null) {
 			algoVisu.destroyVisualization();
@@ -206,6 +237,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 	}
 
 	public static void main(String[] args) {
+
 		JFrame frame = new JFrame();
 		frame.add(new MainWindow());
 		frame.setSize(windowWidth, windowHeight);

@@ -13,48 +13,53 @@ import javax.imageio.ImageIO;
 
 public class ImagePanel extends JPanel {
 
-	private BufferedImage image;
+	private Image image;
 	private static final int maxWidth = 400;
 
-	public ImagePanel(BufferedImage image) {
+	public ImagePanel(Image image) {
 		this.image = image;
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
-		if(image.getWidth() > maxWidth) {
+		if (image.getWidth(getImageObserver()) > maxWidth) {
 			g.drawImage(image.getScaledInstance(maxWidth, -1, Image.SCALE_DEFAULT), 0, 0, null);
 		} else {
 			g.drawImage(image, 0, 0, null);
 		}
 	}
-	
+
 	public int getImageHeight() {
-		if(image.getWidth() > maxWidth) {
-			return image.getScaledInstance(maxWidth, -1, Image.SCALE_DEFAULT).getHeight(new ImageObserver(){
+		if (image.getWidth(getImageObserver()) > maxWidth) {
+			return image.getScaledInstance(maxWidth, -1, Image.SCALE_DEFAULT).getHeight(new ImageObserver() {
 
 				public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
 					// TODO Auto-generated method stub
 					return false;
-				}});
+				}
+			});
 		} else {
-			return image.getHeight();
+			return image.getHeight(getImageObserver());
 		}
 	}
-	
-	
-	public int getImageWidth() {
-		if(image.getWidth() > maxWidth) {
-			return image.getScaledInstance(maxWidth, -1, Image.SCALE_DEFAULT).getWidth(new ImageObserver(){
 
-				public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
-					// TODO Auto-generated method stub
-					return false;
-				}});
+	public int getImageWidth() {
+		if(image.getWidth(getImageObserver()) > maxWidth) {
+			return image.getScaledInstance(maxWidth, -1, Image.SCALE_DEFAULT).getWidth(getImageObserver());
 		} else {
-			return image.getWidth();
+			return image.getWidth(getImageObserver());
 		}
+	}
+
+	public ImageObserver getImageObserver() {
+		return new ImageObserver() {
+
+			public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
+				// TODO Auto-generated method stub
+				return false;
+			}
+		};
 	}
 
 }

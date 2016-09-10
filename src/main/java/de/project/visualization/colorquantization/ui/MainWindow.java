@@ -62,6 +62,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 	private Histogram histo;
 	private SimpleUniverse universe;
 	private boolean showClustersMode = false;
+	private File file;
 
 	private static String filename = "macmiller.png";
 
@@ -186,7 +187,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		int returnVal = fc.showOpenDialog(this);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			File file = fc.getSelectedFile();
+			file = fc.getSelectedFile();
 			// This is where a real application would open the file.
 			System.out.println("Opening: " + file.getName());
 			try {
@@ -206,9 +207,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 			HistogramVisualization visu = new HistogramVisualization(histo);
 			universe = visu.visualizeHistogram(canvas);
 			this.initClusteringVisualisation();
-			
-			ImageWindow imageWindow = new ImageWindow(file);
-			
+						
 		} else {
 			System.out.println("Open command cancelled by user.");
 		}
@@ -223,7 +222,9 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		} else if (activeAlgorithm == ClusteringAlgorithm.MEDIANCUT) {
 			algoVisu = new MedianCutVisualization(universe);
 		}
-		setUpLabels(algoVisu.init(histo));
+		ArrayList<VisualCluster> vClusters = algoVisu.init(histo);
+		setUpLabels(vClusters);
+		ImageWindow imageWindow = new ImageWindow(file, vClusters);
 		if (showClustersMode) {
 			algoVisu.showAllClusters();
 		}

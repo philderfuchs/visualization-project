@@ -13,7 +13,7 @@ import de.project.visualization.colorquantization.entities.VisualCluster;
 public class ImageQuantizer {
 
 	public Image quantize(BufferedImage img, ArrayList<VisualCluster> vClusters) {
-		System.out.println("start");
+		System.out.println("quantizing image");
 
 		int width = img.getWidth();
 		int height = img.getHeight();
@@ -32,7 +32,6 @@ public class ImageQuantizer {
 //						}
 //					}
 					if(c.getHistogram().contains(currentPixel)) {
-						System.out.println("match");
 						quantizedImage.setRGB(x, y, c.getCenter().getRgb());
 						continue loop;
 					}
@@ -40,7 +39,6 @@ public class ImageQuantizer {
 
 			}
 		}
-		System.out.println("finished");
 		return quantizedImage;
 	}
 	

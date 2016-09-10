@@ -57,6 +57,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 	private ArrayList<ClusterLabel> clusterLabels;
 	private final JFileChooser fc = new JFileChooser();
 	private Canvas3D canvas = null;
+	private ImageWindow imageWindow = null;
 
 	private ClusteringAlgorithmVisualization algoVisu;
 	private Histogram histo;
@@ -156,7 +157,9 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		}
 		if (e.getActionCommand().equals("step")) {
 			algoVisu.hideAllClusters();
-			setUpLabels(algoVisu.step(histo));
+			ArrayList<VisualCluster> vClusters = algoVisu.step(histo);
+			setUpLabels(vClusters);
+			imageWindow.refresh(vClusters);
 			if (showClustersMode) {
 				algoVisu.showAllClusters();
 			}
@@ -224,7 +227,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		}
 		ArrayList<VisualCluster> vClusters = algoVisu.init(histo);
 		setUpLabels(vClusters);
-		ImageWindow imageWindow = new ImageWindow(file, vClusters);
+		imageWindow = new ImageWindow(file, vClusters);
 		if (showClustersMode) {
 			algoVisu.showAllClusters();
 		}

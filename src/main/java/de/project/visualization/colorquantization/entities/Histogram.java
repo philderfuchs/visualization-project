@@ -2,19 +2,30 @@ package de.project.visualization.colorquantization.entities;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Collections;
 
 
 public class Histogram {
 
 	private ArrayList<Pixel> pixelList;
+	private HashSet<Integer> intValues;
 
 	public Histogram() {
 		pixelList = new ArrayList<Pixel>();
+		intValues = new HashSet<Integer>();
 	}
 
 	public Histogram(ArrayList<Pixel> histogram) {
 		this.pixelList = histogram;
+		intValues = new HashSet<Integer>();
+		for(Pixel p : histogram) {
+			intValues.add(p.getRgb());
+		}
+	}
+	
+	public boolean contains(int rgb) {
+		return intValues.contains(rgb);
 	}
 	
 	public void sort(Channels c) {
@@ -65,6 +76,7 @@ public class Histogram {
 	
 	public void add(Pixel p) {
 		this.pixelList.add(p);
+		intValues.add(p.getRgb());
 	}
 	
 	public int getLength() {

@@ -25,11 +25,16 @@ public class ImageQuantizer {
 			loop: for(int x = 0; x < width; x++) {
 				currentPixel = img.getRGB(x, y);
 				for(VisualCluster c : vClusters) {
-					for(Pixel p : c.getHistogram().getPixelList()) {
-						if(p.getRgb() == currentPixel) {
-							quantizedImage.setRGB(x, y, c.getCenter().getRgb());
-							continue loop;
-						}
+//					for(Pixel p : c.getHistogram().getPixelList()) {
+//						if(p.getRgb() == currentPixel) {
+//							quantizedImage.setRGB(x, y, c.getCenter().getRgb());
+//							continue loop;
+//						}
+//					}
+					if(c.getHistogram().contains(currentPixel)) {
+						System.out.println("match");
+						quantizedImage.setRGB(x, y, c.getCenter().getRgb());
+						continue loop;
 					}
 				}
 

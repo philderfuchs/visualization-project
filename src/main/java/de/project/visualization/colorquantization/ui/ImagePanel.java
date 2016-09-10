@@ -16,13 +16,8 @@ public class ImagePanel extends JPanel {
 	private BufferedImage image;
 	private static final int maxWidth = 400;
 
-	public ImagePanel(File file) {
-		System.out.println("yooooooo");
-		try {
-			image = ImageIO.read(file);
-		} catch (IOException ex) {
-			// handle exception...
-		}
+	public ImagePanel(BufferedImage image) {
+		this.image = image;
 	}
 
 	@Override

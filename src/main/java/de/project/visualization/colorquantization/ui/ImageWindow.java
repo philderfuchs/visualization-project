@@ -9,6 +9,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JFrame;
 
 import de.project.visualization.colorquantization.entities.VisualCluster;
+import de.project.visualization.colorquantization.read.ImageQuantizer;
 
 public class ImageWindow extends JFrame {
 
@@ -19,7 +20,7 @@ public class ImageWindow extends JFrame {
 		} catch (IOException ex) {
 			// handle exception...
 		}
-		ImagePanel iPanel = new ImagePanel(image);
+		ImagePanel iPanel = new ImagePanel(new ImageQuantizer().quantize(image, vClusters));
 		add(iPanel);
 		setVisible(true);
 		setResizable(false);

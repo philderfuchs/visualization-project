@@ -58,7 +58,7 @@ public class ImageReader {
 		ArrayList<Pixel> pixelList = new ArrayList<Pixel>();
 		for (Integer i : pixelMap.keySet()) {
 			Color c = new Color(i);
-			pixelList.add(new Pixel(c.getRed(), c.getGreen(), c.getBlue(), pixelMap.get(i)));
+			pixelList.add(new Pixel(c.getRed(), c.getGreen(), c.getBlue(), i, pixelMap.get(i)));
 		}
 		Histogram histogram = new Histogram (pixelList);
 				

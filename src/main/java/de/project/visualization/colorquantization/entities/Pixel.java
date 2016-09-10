@@ -8,6 +8,15 @@ public class Pixel {
 	private int b;
 	private int count;
 	private int rgb;
+	
+	public Pixel(int r, int g, int b, int rgb, int count) {
+
+		this.r = r;
+		this.g = g;
+		this.b = b;
+		this.count = count;
+		this.rgb = rgb;
+	}
 
 	public Pixel(int r, int g, int b, int count) {
 
@@ -16,10 +25,6 @@ public class Pixel {
 		this.b = b;
 		this.count = count;
 		this.rgb = ((255&0x0ff)<<24)|((r&0x0ff)<<16)|((g&0x0ff)<<8)|(b&0x0ff);
-
-//		rgb = r;
-//		rgb = (rgb << 8) + g;
-//		rgb = (rgb << 8) + b;
 	}
 
 	public int get(Channels c) {

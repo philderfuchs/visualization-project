@@ -22,14 +22,13 @@ public class ImageQuantizer {
 		
 		int currentPixel;
 		for(int y = 0; y < height; y++) {
-			temp: for(int x = 0; x < width; x++) {
+			loop: for(int x = 0; x < width; x++) {
 				currentPixel = img.getRGB(x, y);
 				for(VisualCluster c : vClusters) {
 					for(Pixel p : c.getHistogram().getPixelList()) {
 						if(p.getRgb() == currentPixel) {
-//							System.out.println("match");
 							quantizedImage.setRGB(x, y, c.getCenter().getRgb());
-							continue temp;
+							continue loop;
 						}
 					}
 				}

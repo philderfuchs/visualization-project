@@ -11,6 +11,7 @@ import de.project.visualization.colorquantization.visu.MedianCutVisualization;
 
 import javax.media.j3d.Canvas3D;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -20,30 +21,40 @@ import javax.swing.JTextField;
 import java.awt.GraphicsConfiguration;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Label;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class MainWindow extends JPanel implements ActionListener {
+public class MainWindow extends JPanel implements ActionListener, ItemListener {
 
+	// general settings
 	private static int windowWidth = 700;
 	private static int windowHeight = 700;
-	
+	private final static String KMEANS = "K-Means";
+	private final static String MEDIANCUT = "Median Cut";
+
+	// UI Elements
+	// Where instance variables are declared:
+	private JPanel cardsPanel;
+	private JPanel clusterColorsPanel;
+	private JTextField k;
+	private ArrayList<ClusterLabel> clusterLabels;
+
 	private ClusteringAlgorithmVisualization algoVisu;
 	private Histogram histo;
 	private SimpleUniverse universe;
-	private JPanel clusterColorsPanel;
-	private JTextField k;
 	private boolean showClustersMode = false;
-	private ArrayList<ClusterLabel> clusterLabels;
 
 	private static String filename = "macmiller.png";
 
@@ -54,17 +65,42 @@ public class MainWindow extends JPanel implements ActionListener {
 		Canvas3D canvas = new Canvas3D(config);
 		add("Center", canvas);
 
-		JPanel kmeansControlPanel = new JPanel();
-		k = new JTextField("5", 5);
-		JButton init = new JButton("init");
-		init.addActionListener(this);
-		JButton step = new JButton("step");
-		step.addActionListener(this);
+		// JPanel controlPanel = new JPanel();
+		// controlPanel.setBackground(Color.BLACK);
+		JPanel kmeansPanel = new JPanel();
+		JPanel medianCutPanel = new JPanel();
 
-		kmeansControlPanel.add(k);
-		kmeansControlPanel.add(init);
-		kmeansControlPanel.add(step);
-		add("North", kmeansControlPanel);
+		k = new JTextField("5", 5);
+		JButton initKeans = new JButton("init");
+		initKeans.addActionListener(this);
+		JButton stepKmeans = new JButton("step");
+		stepKmeans.addActionListener(this);
+		kmeansPanel.add(k);
+		kmeansPanel.add(initKeans);
+		kmeansPanel.add(stepKmeans);
+
+		JButton meandCutInit = new JButton("init");
+		meandCutInit.addActionListener(this);
+		JButton medianCutStep = new JButton("step");
+		medianCutStep.addActionListener(this);
+		medianCutPanel.add(meandCutInit);
+		medianCutPanel.add(medianCutStep);
+
+		cardsPanel = new JPanel(new CardLayout());
+		cardsPanel.add(KMEANS, kmeansPanel);
+		cardsPanel.add(MEDIANCUT, medianCutPanel);
+
+		JPanel comboBoxPane = new JPanel();
+		String comboBoxItems[] = { KMEANS, MEDIANCUT };
+		JComboBox<String> cb = new JComboBox<String>(comboBoxItems);
+		cb.setEditable(false);
+		cb.addItemListener(this);
+		comboBoxPane.add(cb);
+
+		JPanel controlPanel = new JPanel(new BorderLayout());
+		controlPanel.add(comboBoxPane, BorderLayout.PAGE_START);
+		controlPanel.add(cardsPanel, BorderLayout.CENTER);
+		add("North", controlPanel);
 
 		clusterColorsPanel = new JPanel();
 		clusterColorsPanel.setLayout(new FlowLayout(FlowLayout.CENTER, 0, 0));
@@ -82,15 +118,20 @@ public class MainWindow extends JPanel implements ActionListener {
 		universe = visu.visualizeHistogram(canvas);
 	}
 
+	public void itemStateChanged(ItemEvent evt) {
+		CardLayout cl = (CardLayout) (cardsPanel.getLayout());
+		cl.show(cardsPanel, (String) evt.getItem());
+	}
+
 	public void actionPerformed(ActionEvent e) {
 		if (e.getActionCommand().equals("init")) {
 			if (algoVisu != null) {
 				algoVisu.destroyVisualization();
 			}
-//			algoVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
-			algoVisu = new MedianCutVisualization(universe);
+			algoVisu = new KmeansVisualization(Integer.parseInt(k.getText()), universe);
+			// algoVisu = new MedianCutVisualization(universe);
 			setUpLabels(algoVisu.init(histo));
-			if (showClustersMode) { 
+			if (showClustersMode) {
 				algoVisu.showAllClusters();
 			}
 		}
@@ -105,12 +146,12 @@ public class MainWindow extends JPanel implements ActionListener {
 			showClustersMode = !showClustersMode;
 			if (showClustersMode) {
 				algoVisu.showAllClusters();
-				for(ClusterLabel l : clusterLabels) {
+				for (ClusterLabel l : clusterLabels) {
 					l.setActive(false);
 				}
 			} else {
 				algoVisu.hideAllClusters();
-				for(ClusterLabel l : clusterLabels) {
+				for (ClusterLabel l : clusterLabels) {
 					l.setActive(true);
 				}
 			}
@@ -120,10 +161,10 @@ public class MainWindow extends JPanel implements ActionListener {
 
 	private void setUpLabels(ArrayList<VisualCluster> clusters) {
 		clusterColorsPanel.removeAll();
-		
-//		JButton all = new JButton("all");
-//		all.addActionListener(this);
-//		clusterColorsPanel.add(all);
+
+		// JButton all = new JButton("all");
+		// all.addActionListener(this);
+		// clusterColorsPanel.add(all);
 		int labelWidth = this.windowWidth / clusters.size();
 		clusterLabels = new ArrayList<ClusterLabel>();
 		for (VisualCluster c : clusters) {

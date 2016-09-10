@@ -207,13 +207,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 			universe = visu.visualizeHistogram(canvas);
 			this.initClusteringVisualisation();
 			
-			JFrame imageWindow = new JFrame();
-			ImagePanel iPanel = new ImagePanel(file);
-			imageWindow.add(iPanel);
-			imageWindow.setVisible(true);
-			imageWindow.setResizable(false);
-			imageWindow.setSize(iPanel.getImageWidth(), iPanel.getImageHeight());
-			imageWindow.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			ImageWindow imageWindow = new ImageWindow(file);
 			
 		} else {
 			System.out.println("Open command cancelled by user.");

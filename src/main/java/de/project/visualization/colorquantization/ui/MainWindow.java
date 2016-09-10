@@ -46,7 +46,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 	private static int windowHeight = 700;
 	private final static String KMEANS = "K-Means";
 	private final static String MEDIANCUT = "Median Cut";
-	private final static Color controlPanelColor = Color.darkGray;
+	private final static Color controlPanelColor = Color.BLACK;
 	private ClusteringAlgorithm activeAlgorithm = ClusteringAlgorithm.KMEANS;
 
 	// UI Elements
@@ -109,13 +109,16 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 
 		JPanel controlPanel = new JPanel(new BorderLayout());
 		controlPanel.setBackground(controlPanelColor);
-		JButton open = new JButton("Open New Image");
-		open.addActionListener(this);
+		JButton openButton = new JButton("Open New Image");
+		openButton.addActionListener(this);
+		JPanel openPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+		openPanel.setBackground(controlPanelColor);
+		openPanel.add(openButton);
 		JButton showAll = new JButton("show all clusters");
 		showAll.setForeground(Color.GRAY);
 		showAll.addActionListener(this);
 
-		controlPanel.add(open, BorderLayout.LINE_START);
+		controlPanel.add(openPanel, BorderLayout.LINE_START);
 		controlPanel.add(centerPanel, BorderLayout.CENTER);
 		controlPanel.add(showAll, BorderLayout.LINE_END);
 		add("North", controlPanel);

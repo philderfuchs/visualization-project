@@ -78,17 +78,17 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		medianCutPanel.setBackground(controlPanelColor);
 
 		k = new JTextField("5", 5);
-		JButton initKeans = new JButton("restart");
+		JButton initKeans = new JButton("Restart");
 		initKeans.addActionListener(this);
-		JButton stepKmeans = new JButton("step");
+		JButton stepKmeans = new JButton("Step");
 		stepKmeans.addActionListener(this);
 		kmeansPanel.add(k);
 		kmeansPanel.add(initKeans);
 		kmeansPanel.add(stepKmeans);
 
-		JButton meandCutInit = new JButton("restart");
+		JButton meandCutInit = new JButton("Restart");
 		meandCutInit.addActionListener(this);
-		JButton medianCutStep = new JButton("step");
+		JButton medianCutStep = new JButton("Step");
 		medianCutStep.addActionListener(this);
 		medianCutPanel.add(meandCutInit);
 		medianCutPanel.add(medianCutStep);
@@ -115,7 +115,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 //		JPanel openPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
 //		openPanel.setBackground(controlPanelColor);
 //		openPanel.add(openButton);
-		JButton showAll = new JButton("show all clusters");
+		JButton showAll = new JButton("Show All Clusters");
 		showAll.setForeground(Color.GRAY);
 		showAll.addActionListener(this);
 
@@ -152,10 +152,10 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 			openImageAndSetUpCanvas();
 		}
 
-		if (e.getActionCommand().equals("restart")) {
+		if (e.getActionCommand().equals("Restart")) {
 			initClusteringVisualisation();
 		}
-		if (e.getActionCommand().equals("step")) {
+		if (e.getActionCommand().equals("Step")) {
 			algoVisu.hideAllClusters();
 			ArrayList<VisualCluster> vClusters = algoVisu.step(histo);
 			setUpLabels(vClusters);
@@ -164,7 +164,7 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 				algoVisu.showAllClusters();
 			}
 		}
-		if (e.getActionCommand().equals("show all clusters")) {
+		if (e.getActionCommand().equals("Show All Clusters")) {
 			showClustersMode = !showClustersMode;
 
 			if (showClustersMode) {

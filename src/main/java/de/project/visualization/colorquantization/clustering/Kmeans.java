@@ -57,7 +57,6 @@ public class Kmeans {
 			c.getHistogram().getPixelList().clear();
 		}
 
-		System.out.println("calculate closest values");
 		// put each pixel in the histogram in the closest cluster
 		for (Pixel p : histogram.getPixelList()) {
 			double minDistance = Double.MAX_VALUE;

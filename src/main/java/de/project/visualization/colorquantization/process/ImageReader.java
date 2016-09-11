@@ -1,4 +1,4 @@
-package de.project.visualization.colorquantization.read;
+package de.project.visualization.colorquantization.process;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;

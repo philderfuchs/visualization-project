@@ -5,7 +5,7 @@ import java.io.File;
 
 import de.project.visualization.colorquantization.clustering.ClusteringAlgorithm;
 import de.project.visualization.colorquantization.entities.*;
-import de.project.visualization.colorquantization.read.ImageReader;
+import de.project.visualization.colorquantization.process.ImageReader;
 import de.project.visualization.colorquantization.visu.ClusteringAlgorithmVisualization;
 import de.project.visualization.colorquantization.visu.HistogramVisualization;
 import de.project.visualization.colorquantization.visu.KmeansVisualization;

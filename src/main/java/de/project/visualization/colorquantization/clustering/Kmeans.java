@@ -25,7 +25,6 @@ public class Kmeans {
 		if (clusters.size() == 0) {
 			// clusters not yet initialized
 			// initialize random clusters
-			System.out.println("initializ clusters");
 			for (int i = 0; i < k; i++) {
 				clusters.add(new Cluster(new Histogram(), new Pixel((int) (Math.random() * 255),
 						(int) (Math.random() * 255), (int) (Math.random() * 255), 1)));
@@ -33,7 +32,6 @@ public class Kmeans {
 		} else {
 			// clusters already initialized
 			// move of clusters
-			System.out.println("move clusters");
 			for (Cluster c : clusters) {
 				if (c.getHistogram().getLength() == 0) {
 					continue;

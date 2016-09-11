@@ -15,7 +15,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import de.project.visualization.colorquantization.entities.VisualCluster;
-import de.project.visualization.colorquantization.read.ImageQuantizer;
+import de.project.visualization.colorquantization.process.ImageQuantizer;
 
 public class ImageWindow extends JFrame {
 

@@ -1,4 +1,4 @@
-package de.project.visualization.colorquantization.read;
+package de.project.visualization.colorquantization.process;
 
 import java.awt.Color;
 import java.awt.Image;
@@ -13,7 +13,6 @@ import de.project.visualization.colorquantization.entities.VisualCluster;
 public class ImageQuantizer {
 
 	public Image quantize(BufferedImage img, ArrayList<VisualCluster> vClusters) {
-		System.out.println("quantizing image");
 
 		int width = img.getWidth();
 		int height = img.getHeight();

@@ -101,7 +101,15 @@ public class Histogram {
 
 	public void setHistogram(ArrayList<Pixel> histogram) {
 		this.pixelList = histogram;
+		intValues = new HashSet<Integer>();
+		for(Pixel p : histogram) {
+			intValues.add(p.getRgb());
+		}
 	}
-
+	
+	public void clear(){
+		this.pixelList.clear();
+		this.intValues.clear();
+	}
 
 }

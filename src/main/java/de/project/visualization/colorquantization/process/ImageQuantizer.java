@@ -16,29 +16,22 @@ public class ImageQuantizer {
 
 		int width = img.getWidth();
 		int height = img.getHeight();
-		
-        BufferedImage quantizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-		
+
+		BufferedImage quantizedImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+
 		int currentPixel;
-		for(int y = 0; y < height; y++) {
-			loop: for(int x = 0; x < width; x++) {
+		for (int y = 0; y < height; y++) {
+			loop: for (int x = 0; x < width; x++) {
 				currentPixel = img.getRGB(x, y);
-				for(VisualCluster c : vClusters) {
-//					for(Pixel p : c.getHistogram().getPixelList()) {
-//						if(p.getRgb() == currentPixel) {
-//							quantizedImage.setRGB(x, y, c.getCenter().getRgb());
-//							continue loop;
-//						}
-//					}
-					if(c.getHistogram().contains(currentPixel)) {
+				for (VisualCluster c : vClusters) {
+					if (c.getHistogram().contains(currentPixel)) {
 						quantizedImage.setRGB(x, y, c.getCenter().getRgb());
-						continue loop;
+						 continue loop;
 					}
 				}
-
 			}
 		}
 		return quantizedImage;
 	}
-	
+
 }

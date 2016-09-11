@@ -54,7 +54,7 @@ public class Kmeans {
 		}
 		
 		for (Cluster c : clusters) {
-			c.getHistogram().getPixelList().clear();
+			c.getHistogram().clear();
 		}
 
 		// put each pixel in the histogram in the closest cluster

@@ -30,7 +30,7 @@ public class ImageWindow extends JFrame {
 		} catch (IOException ex) {
 			// handle exception...
 		}
-		setLayout(new BoxLayout(getContentPane(), BoxLayout.LINE_AXIS));
+		setLayout(new BoxLayout(getContentPane(), BoxLayout.PAGE_AXIS));
 		
 		ImagePanel original = new ImagePanel(image);
 		quantized = new ImagePanel(new ImageQuantizer().quantize(image, vClusters));
@@ -38,7 +38,7 @@ public class ImageWindow extends JFrame {
 		add(quantized);
 		setVisible(true);
 		setResizable(false);
-		setSize(quantized.getImageWidth() * 2, quantized.getImageHeight());
+		setSize(quantized.getImageWidth(), quantized.getImageHeight() * 2);
 	}
 
 	public void refresh(ArrayList<VisualCluster> vClusters) {

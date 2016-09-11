@@ -24,7 +24,7 @@ public class ImagePanel extends JPanel {
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
 		if (image.getWidth(getImageObserver()) > maxWidth) {
-			g.drawImage(image.getScaledInstance(maxWidth, -1, Image.SCALE_DEFAULT), 0, 0, null);
+			g.drawImage(image.getScaledInstance(maxWidth, -1, Image.SCALE_SMOOTH), 0, 0, null);
 		} else {
 			g.drawImage(image, 0, 0, null);
 		}
@@ -32,7 +32,7 @@ public class ImagePanel extends JPanel {
 
 	public int getImageHeight() {
 		if (image.getWidth(getImageObserver()) > maxWidth) {
-			return image.getScaledInstance(maxWidth, -1, Image.SCALE_DEFAULT).getHeight(new ImageObserver() {
+			return image.getScaledInstance(maxWidth, -1, Image.SCALE_SMOOTH).getHeight(new ImageObserver() {
 
 				public boolean imageUpdate(Image img, int infoflags, int x, int y, int width, int height) {
 					// TODO Auto-generated method stub
@@ -46,7 +46,7 @@ public class ImagePanel extends JPanel {
 
 	public int getImageWidth() {
 		if(image.getWidth(getImageObserver()) > maxWidth) {
-			return image.getScaledInstance(maxWidth, -1, Image.SCALE_DEFAULT).getWidth(getImageObserver());
+			return image.getScaledInstance(maxWidth, -1, Image.SCALE_SMOOTH).getWidth(getImageObserver());
 		} else {
 			return image.getWidth(getImageObserver());
 		}

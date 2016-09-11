@@ -227,6 +227,9 @@ public class MainWindow extends JPanel implements ActionListener, ItemListener {
 		}
 		ArrayList<VisualCluster> vClusters = algoVisu.init(histo);
 		setUpLabels(vClusters);
+		
+		if(imageWindow != null) imageWindow.destroy();
+		
 		imageWindow = new ImageWindow(file, vClusters);
 		if (showClustersMode) {
 			algoVisu.showAllClusters();

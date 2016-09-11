@@ -3,6 +3,7 @@ package de.project.visualization.colorquantization.ui;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -31,19 +32,12 @@ public class ImageWindow extends JFrame {
 		}
 		setLayout(new BoxLayout(getContentPane(), BoxLayout.LINE_AXIS));
 		
-//		JPanel container = new JPanel();
 		ImagePanel original = new ImagePanel(image);
 		quantized = new ImagePanel(new ImageQuantizer().quantize(image, vClusters));
 		add(original);
-//		add(Box.createRigidArea(new Dimension(original.getImageWidth(), original.getImageHeight())));
 		add(quantized);
-//		add(Box.createRigidArea(new Dimension(quantized.getImageWidth(), quantized.getImageHeight())));
-//		add(original, BorderLayout.CENTER);
-//		add(quantized, BorderLayout.CENTER);
 		setVisible(true);
 		setResizable(false);
-		// container.setSize(original.getImageWidth()*2,
-		// original.getImageHeight());
 		setSize(quantized.getImageWidth() * 2, quantized.getImageHeight());
 	}
 
@@ -53,6 +47,10 @@ public class ImageWindow extends JFrame {
 		add(quantized);
 		revalidate();
 		repaint();
+	}
+	
+	public void destroy() {
+		dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING));
 	}
 
 }

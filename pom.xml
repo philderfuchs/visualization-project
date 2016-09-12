@@ -13,6 +13,7 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
+		<exec.mainClass>de.project.visualization.colorquantization.ui.MainWindow</exec.mainClass>
 	</properties>
 
 	<build>
